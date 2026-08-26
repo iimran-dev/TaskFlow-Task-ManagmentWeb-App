@@ -2,14 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ListTodo, ArrowRight, Sparkles, Zap, Target, Flame, ShieldCheck } from "lucide-react";
+import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BentoFeatures } from "@/components/home/bento-features";
-import { InteractiveDemo } from "@/components/home/interactive-demo";
-import { StatsCounter } from "@/components/home/stats-counter";
 import { WorkflowTimeline } from "@/components/home/workflow-timeline";
-import { TestimonialsMarquee } from "@/components/home/testimonials-marquee";
 import { FAQAccordion } from "@/components/home/faq-accordion";
 import { CTASection } from "@/components/home/cta-section";
 
@@ -259,17 +256,8 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
         {/* Bento Features Grid */}
         <BentoFeatures />
 
-        {/* Interactive Live Demo Sandbox */}
-        {/*<InteractiveDemo onGetStarted={onGetStarted} />*/}
-
-        {/* Stats & Velocity Metrics Counter */}
-        {/*<StatsCounter />*/}
-
         {/* 3-Step Routine Visual Timeline */}
         <WorkflowTimeline />
-
-        {/* Social Proof & Testimonials */}
-        {/*<TestimonialsMarquee />*/}
 
         {/* FAQ Accordion Section */}
         <FAQAccordion />

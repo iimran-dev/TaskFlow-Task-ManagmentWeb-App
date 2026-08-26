@@ -1,5 +1,21 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const createTodoSchema = z.object({
+  title: z
+    .string({ message: "Title is required" })
+    .trim()
+    .min(1, "Title cannot be empty")
+    .max(500, "Title cannot exceed 500 characters"),
+  dueDate: z
+    .string()
+    .nullable()
+    .optional()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "Invalid due date format",
+    }),
+});
 
 export async function GET() {
   try {
@@ -19,18 +35,20 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, dueDate } = body;
+    const result = createTodoSchema.safeParse(body);
 
-    if (!title || typeof title !== "string" || title.trim().length === 0) {
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Title is required" },
+        { error: result.error.issues[0]?.message || "Invalid input payload" },
         { status: 400 }
       );
     }
 
+    const { title, dueDate } = result.data;
+
     const todo = await db.todo.create({
       data: {
-        title: title.trim(),
+        title,
         dueDate: dueDate ? new Date(dueDate) : null,
       },
     });
@@ -44,3 +62,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

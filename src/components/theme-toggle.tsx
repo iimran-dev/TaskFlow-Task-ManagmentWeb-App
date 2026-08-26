@@ -3,7 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 
 function useIsMounted() {
   return useSyncExternalStore(
@@ -14,7 +14,7 @@ function useIsMounted() {
 }
 
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const mounted = useIsMounted();
   const isDark = mounted ? resolvedTheme === "dark" : false;
 

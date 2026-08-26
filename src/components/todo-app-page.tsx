@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Trash2, ArrowLeft, Flame, Sparkles } from "lucide-react";
+import { Trash2, ArrowLeft, Flame, Minimize2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { format } from "date-fns";
 
@@ -104,6 +104,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       } else if (e.key === "Escape") {
         setIsShortcutsOpen(false);
         setSearchQuery("");
+        setIsFocusMode(false);
       }
     };
 
@@ -294,6 +295,26 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
         onClose={() => setIsShortcutsOpen(false)}
       />
 
+      {/* Floating Exit Focus Button (Visible when Focus Mode is active) */}
+      {isFocusMode && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: -10 }}
+          className="fixed top-4 right-4 sm:top-5 sm:right-6 z-50 flex items-center gap-2"
+        >
+          <Button
+            onClick={() => setIsFocusMode(false)}
+            className="h-9 px-3.5 rounded-full bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border border-[#3bda71] dark:border-[#3bda71] text-xs font-extrabold shadow-xl hover:bg-[#34c666] dark:hover:bg-[#34c666] hover:scale-105 active:scale-95 transition-all gap-2 cursor-pointer"
+            title="Exit Focus Mode (ESC)"
+          >
+            <Minimize2 className="w-3.5 h-3.5 text-black dark:text-black stroke-[2.5]" />
+            <span className="font-extrabold text-black dark:text-black">Exit Focus</span>
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-black/15 text-black dark:bg-black/20 dark:text-black">ESC</kbd>
+          </Button>
+        </motion.div>
+      )}
+
       {/* Top Navigation Bar (Hidden in Focus Mode) */}
       {!isFocusMode && (
         <header className="py-4 px-6 sm:px-8 border-b border-neutral-200/80 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
@@ -345,33 +366,51 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       )}
 
       {/* Main App Workspace */}
-      <main className={`flex-1 px-4 sm:px-6 ${isFocusMode ? "py-10" : "py-6 sm:py-8"}`}>
-        <div className="max-w-2xl mx-auto space-y-5 sm:space-y-6">
+      <main className={`flex-1 px-4 sm:px-6 ${isFocusMode ? "py-6 sm:py-8" : "py-6 sm:py-8"}`}>
+        <div className={`mx-auto transition-all duration-300 ${isFocusMode ? "max-w-xl space-y-3.5" : "max-w-2xl space-y-5 sm:space-y-6"}`}>
 
-          {/* Greeting Hero & Daily Streak Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex items-center justify-between pt-1"
-          >
-            <div className="space-y-1 text-left">
-              <h2 className="text-xl sm:text-2xl font-extrabold text-black dark:text-white tracking-tight flex items-center gap-2">
-                <span>{getGreeting()}</span>
-                <span className="inline-block w-2 h-2 rounded-full bg-[#3bda71] align-baseline" />
-              </h2>
-              <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-normal">
-                {isFocusMode ? "Focus Mode Active • Distractions minimized" : "Clean overview of your daily focus and targets."}
-              </p>
-            </div>
-
-            {completedCount > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-xs font-bold text-black dark:text-[#3bda71] shrink-0">
-                <Flame className="w-4 h-4 text-[#3bda71] fill-[#3bda71]" />
-                <span>{completedCount} Done</span>
+          {/* Header Section (Condensed 1-line bar in Focus Mode vs Full Hero in Normal Mode) */}
+          {isFocusMode ? (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between py-1 border-b border-neutral-200/80 dark:border-neutral-800/80 pb-2.5"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#3bda71] animate-pulse" />
+                <h2 className="text-base sm:text-lg font-bold text-black dark:text-white tracking-tight">
+                  Focus Workspace
+                </h2>
               </div>
-            )}
-          </motion.div>
+              <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                {activeCount} active task{activeCount === 1 ? "" : "s"}
+              </span>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex items-center justify-between pt-1"
+            >
+              <div className="space-y-1 text-left">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-black dark:text-white tracking-tight flex items-center gap-2">
+                  <span>{getGreeting()}</span>
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#3bda71] align-baseline" />
+                </h2>
+                <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-normal">
+                  Clean overview of your daily focus and targets.
+                </p>
+              </div>
+
+              {completedCount > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-xs font-bold text-black dark:text-[#3bda71] shrink-0">
+                  <Flame className="w-4 h-4 text-[#3bda71] fill-[#3bda71]" />
+                  <span>{completedCount} Done</span>
+                </div>
+              )}
+            </motion.div>
+          )}
 
           {/* Add Todo Section */}
           <TodoAddForm
@@ -382,6 +421,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
             onAddTodo={addTodo}
             addingTodo={addingTodo}
             titleInputRef={titleInputRef}
+            isFocusMode={isFocusMode}
           />
 
           {/* Live Search Bar */}
