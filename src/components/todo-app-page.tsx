@@ -14,11 +14,13 @@ import { TodoProgress } from "@/components/todo/todo-progress";
 import { TodoList } from "@/components/todo/todo-list";
 import { TodoSearchBar } from "@/components/todo/todo-search-bar";
 import { KeyboardShortcutsModal } from "@/components/todo/keyboard-shortcuts-modal";
-import { Todo, FilterType, CategoryType, PriorityType } from "@/types/todo";
+import { Todo, FilterType, CategoryType } from "@/types/todo";
 
 interface TodoAppPageProps {
   onBack?: () => void;
 }
+
+const STORAGE_KEY = "taskflow_todos_local_v2";
 
 export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -36,18 +38,47 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const titleInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // LocalStorage Helpers
+  const getLocalStorageTodos = (): Todo[] => {
+    if (typeof window === "undefined") return [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const saveLocalStorageTodos = (data: Todo[]) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.error("Failed to save to localStorage:", e);
+    }
+  };
+
   const fetchTodos = useCallback(async () => {
+    const localTodos = getLocalStorageTodos();
+
     try {
       const res = await fetch("/api/todos");
       if (res.ok) {
         const data = await res.json();
-        setTodos(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setTodos(data);
+          saveLocalStorageTodos(data);
+          return;
+        }
       }
     } catch (error) {
-      console.error("Failed to fetch todos:", error);
+      console.warn("API fetch failed, falling back to localStorage:", error);
     } finally {
       setLoading(false);
     }
+
+    // Fallback to local storage
+    setTodos(localTodos);
   }, []);
 
   useEffect(() => {
@@ -57,7 +88,6 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   // Global Keyboard Shortcuts Listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't intercept if user is typing in input unless it's a Cmd/Ctrl shortcut or Esc
       const isInput =
         document.activeElement?.tagName === "INPUT" ||
         document.activeElement?.tagName === "TEXTAREA";
@@ -100,24 +130,52 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   };
 
   const addTodo = async () => {
-    if (!newTitle.trim()) return;
+    const titleText = newTitle.trim();
+    if (!titleText) return;
+
     setAddingTodo(true);
 
+    const tempId = `task-${Date.now()}`;
+    const newTodoItem: Todo = {
+      id: tempId,
+      title: titleText,
+      completed: false,
+      dueDate: newDate ? newDate.toISOString() : null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // 1. Optimistic Instant State & LocalStorage Update
+    setTodos((prev) => {
+      const next = [newTodoItem, ...prev];
+      saveLocalStorageTodos(next);
+      return next;
+    });
+
+    // Reset inputs and clear filter to ensure immediate visibility
+    setNewTitle("");
+    setNewDate(undefined);
+    if (filter === "completed") setFilter("all");
+    if (searchQuery) setSearchQuery("");
+
+    // 2. Background API Sync (if database is available)
     try {
       const res = await fetch("/api/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: newTitle, dueDate: newDate?.toISOString() }),
+        body: JSON.stringify({ title: titleText, dueDate: newDate?.toISOString() }),
       });
 
       if (res.ok) {
-        const todo = await res.json();
-        setTodos((prev) => [todo, ...prev]);
-        setNewTitle("");
-        setNewDate(undefined);
+        const serverTodo = await res.json();
+        setTodos((prev) => {
+          const updated = prev.map((t) => (t.id === tempId ? serverTodo : t));
+          saveLocalStorageTodos(updated);
+          return updated;
+        });
       }
     } catch (error) {
-      console.error("Failed to add todo:", error);
+      console.warn("DB sync unavailable, task preserved locally:", error);
     } finally {
       setAddingTodo(false);
     }
@@ -126,11 +184,12 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const toggleTodo = async (id: string, currentCompletedStatus: boolean) => {
     const nextCompletedStatus = !currentCompletedStatus;
 
-    // Optimistic UI update
+    // Optimistic UI & LocalStorage update
     const optimisticTodos = todos.map((t) =>
       t.id === id ? { ...t, completed: nextCompletedStatus } : t
     );
     setTodos(optimisticTodos);
+    saveLocalStorageTodos(optimisticTodos);
 
     if (nextCompletedStatus) {
       const remainingActive = optimisticTodos.filter((t) => !t.completed).length;
@@ -138,26 +197,25 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
     }
 
     try {
-      const res = await fetch(`/api/todos/${id}`, {
+      await fetch(`/api/todos/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ completed: nextCompletedStatus }),
       });
-      if (!res.ok) setTodos(todos);
     } catch {
-      setTodos(todos);
+      // Local state is preserved
     }
   };
 
   const deleteTodo = async (id: string) => {
     const optimisticTodos = todos.filter((t) => t.id !== id);
     setTodos(optimisticTodos);
+    saveLocalStorageTodos(optimisticTodos);
 
     try {
-      const res = await fetch(`/api/todos/${id}`, { method: "DELETE" });
-      if (!res.ok) setTodos(todos);
+      await fetch(`/api/todos/${id}`, { method: "DELETE" });
     } catch {
-      setTodos(todos);
+      // Local state is preserved
     }
   };
 
@@ -168,37 +226,43 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
         : t
     );
     setTodos(optimisticTodos);
+    saveLocalStorageTodos(optimisticTodos);
 
     try {
-      const res = await fetch(`/api/todos/${id}`, {
+      await fetch(`/api/todos/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dueDate: dueDate ? dueDate.toISOString() : null }),
       });
-      if (!res.ok) setTodos(todos);
     } catch {
-      setTodos(todos);
+      // Local state is preserved
     }
   };
 
   const clearCompleted = async () => {
     const completedTodos = todos.filter((t) => t.completed);
-    await Promise.all(completedTodos.map((t) => deleteTodo(t.id)));
+    const activeTodos = todos.filter((t) => !t.completed);
+
+    setTodos(activeTodos);
+    saveLocalStorageTodos(activeTodos);
+
+    await Promise.all(
+      completedTodos.map((t) =>
+        fetch(`/api/todos/${t.id}`, { method: "DELETE" }).catch(() => {})
+      )
+    );
   };
 
   // Filtered Todos by Status, Search Query, and Category
   const filteredTodos = todos.filter((todo) => {
-    // Status Filter
     if (filter === "active" && todo.completed) return false;
     if (filter === "completed" && !todo.completed) return false;
 
-    // Search Query Filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       if (!todo.title.toLowerCase().includes(q)) return false;
     }
 
-    // Category Filter
     if (selectedCategory !== "all") {
       if (todo.category !== selectedCategory) return false;
     }
@@ -230,7 +294,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
         onClose={() => setIsShortcutsOpen(false)}
       />
 
-      {/* Top Navigation Bar (Hidden in Focus Mode for distraction-free execution) */}
+      {/* Top Navigation Bar (Hidden in Focus Mode) */}
       {!isFocusMode && (
         <header className="py-4 px-6 sm:px-8 border-b border-neutral-200/80 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
           <div className="max-w-2xl mx-auto flex items-center justify-between">
