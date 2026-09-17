@@ -305,12 +305,12 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
         >
           <Button
             onClick={() => setIsFocusMode(false)}
-            className="h-9 px-3.5 rounded-full bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border border-[#3bda71] dark:border-[#3bda71] text-xs font-extrabold shadow-xl hover:bg-[#34c666] dark:hover:bg-[#34c666] hover:scale-105 active:scale-95 transition-all gap-2 cursor-pointer"
+            className="h-9 px-3.5 rounded-full bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border border-[#3bda71] dark:border-[#3bda71] text-[13px] leading-[18px] font-semibold shadow-xl hover:bg-[#34c666] dark:hover:bg-[#34c666] hover:scale-105 active:scale-95 transition-all gap-2 cursor-pointer"
             title="Exit Focus Mode (ESC)"
           >
             <Minimize2 className="w-3.5 h-3.5 text-black dark:text-black stroke-[2.5]" />
-            <span className="font-extrabold text-black dark:text-black">Exit Focus</span>
-            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-black/15 text-black dark:bg-black/20 dark:text-black">ESC</kbd>
+            <span className="font-semibold text-black dark:text-black">Exit Focus</span>
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[11px] leading-[14px] font-mono font-medium rounded bg-black/15 text-black dark:bg-black/20 dark:text-black">ESC</kbd>
           </Button>
         </motion.div>
       )}
@@ -330,11 +330,11 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-lg sm:text-xl font-bold tracking-tight text-black dark:text-white">
-                    TaskFlow
-                  </h1>
+                  <span className="text-[18px] sm:text-[20px] leading-[24px] font-semibold tracking-[-0.02em] text-black dark:text-white">
+                    taskflow.
+                  </span>
                 </div>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-normal">
+                <p className="text-[12px] leading-[16px] text-neutral-500 dark:text-neutral-400 font-normal">
                   {format(new Date(), "EEEE, MMMM d, yyyy")}
                 </p>
               </div>
@@ -351,7 +351,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
                   variant="ghost"
                   size="sm"
                   onClick={onBack}
-                  className="h-11 px-3 rounded-lg text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
+                  className="h-11 px-3.5 rounded-lg text-[14px] leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Home</span>
@@ -378,11 +378,11 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
             >
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#3bda71] animate-pulse" />
-                <h2 className="text-base sm:text-lg font-bold text-black dark:text-white tracking-tight">
+                <h2 className="text-[18px] leading-[24px] font-semibold text-black dark:text-white tracking-[-0.02em]">
                   Focus Workspace
                 </h2>
               </div>
-              <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+              <span className="text-[13px] leading-[18px] font-medium text-neutral-500 dark:text-neutral-400">
                 {activeCount} active task{activeCount === 1 ? "" : "s"}
               </span>
             </motion.div>
@@ -394,17 +394,17 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
               className="flex items-center justify-between pt-1"
             >
               <div className="space-y-1 text-left">
-                <h2 className="text-xl sm:text-2xl font-extrabold text-black dark:text-white tracking-tight flex items-center gap-2">
+                <h1 className="text-[28px] sm:text-[32px] leading-[36px] sm:leading-[40px] font-bold text-black dark:text-white tracking-[-0.02em] flex items-center gap-2">
                   <span>{getGreeting()}</span>
                   <span className="inline-block w-2 h-2 rounded-full bg-[#3bda71] align-baseline" />
-                </h2>
-                <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-normal">
+                </h1>
+                <p className="text-[14px] sm:text-[15px] leading-[20px] sm:leading-[22px] text-neutral-500 dark:text-neutral-400 font-normal">
                   Clean overview of your daily focus and targets.
                 </p>
               </div>
 
               {completedCount > 0 && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-xs font-bold text-black dark:text-[#3bda71] shrink-0">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-[13px] leading-[18px] font-medium text-black dark:text-[#3bda71] shrink-0">
                   <Flame className="w-4 h-4 text-[#3bda71] fill-[#3bda71]" />
                   <span>{completedCount} Done</span>
                 </div>
@@ -470,7 +470,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 px-4 rounded-lg text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-[#3bda71]/15 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-all shadow-sm"
+                className="h-8 px-4 rounded-lg text-[13px] leading-[18px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-[#3bda71]/15 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition-all shadow-sm"
                 onClick={clearCompleted}
               >
                 <Trash2 className="w-3.5 h-3.5 mr-2 text-neutral-400" />
@@ -484,8 +484,8 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       {/* Footer */}
       {!isFocusMode && (
         <footer className="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black py-5 text-center">
-          <p className="text-xs font-normal text-neutral-400 dark:text-neutral-500 tracking-wide">
-            TaskFlow &bull; Press <kbd className="px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border font-mono">?</kbd> for Keyboard Shortcuts
+          <p className="text-[12px] leading-[16px] font-normal text-neutral-400 dark:text-neutral-500">
+            TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
           </p>
         </footer>
       )}

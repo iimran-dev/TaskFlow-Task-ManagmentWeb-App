@@ -42,7 +42,7 @@ export function TodoSearchBar({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Filter or search tasks... (⌘F)"
-          className="h-10 pl-10 pr-16 rounded-xl border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-xs sm:text-sm text-black dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-2 focus-visible:ring-[#3bda71] shadow-sm transition-all"
+          className="h-10 pl-10 pr-16 rounded-xl border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-[15px] leading-[22px] font-normal text-black dark:text-white placeholder:text-[15px] placeholder:leading-[22px] placeholder:font-normal placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-2 focus-visible:ring-[#3bda71] shadow-sm transition-all"
         />
 
         {searchQuery ? (
@@ -53,14 +53,14 @@ export function TodoSearchBar({
             <X className="w-3.5 h-3.5" />
           </button>
         ) : (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-[10px] font-mono text-neutral-400 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded border border-neutral-200 dark:border-neutral-700 pointer-events-none">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-[12px] leading-[16px] font-mono font-medium text-neutral-400 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded border border-neutral-200 dark:border-neutral-700 pointer-events-none">
             ⌘F
           </div>
         )}
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none text-xs">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
         <Tag className="w-3 h-3 text-neutral-400 shrink-0 ml-1 mr-0.5" />
         {categories.map((cat) => {
           const isActive = selectedCategory === cat.type;
@@ -68,10 +68,10 @@ export function TodoSearchBar({
             <button
               key={cat.type}
               onClick={() => setSelectedCategory(cat.type)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all shrink-0 ${
+              className={`px-2.5 py-1 rounded-lg text-[13px] leading-[18px] transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? "bg-neutral-900 dark:bg-white text-white dark:text-black shadow-sm"
-                  : "bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71]"
+                  ? "bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold shadow-sm"
+                  : "bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 font-medium border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71]"
               }`}
             >
               {cat.label}

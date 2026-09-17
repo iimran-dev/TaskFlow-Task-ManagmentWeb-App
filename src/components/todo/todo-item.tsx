@@ -66,7 +66,7 @@ export function TodoItem({
       <div className="flex-1 min-w-0 space-y-0.5">
         <span
           className={cn(
-            "text-base transition-all duration-200 block truncate font-medium tracking-tight",
+            "text-[16px] leading-[24px] font-medium transition-all duration-200 block truncate",
             todo.completed
               ? "text-neutral-400 dark:text-neutral-500 line-through decoration-neutral-400 decoration-1"
               : "text-black dark:text-white"
@@ -80,7 +80,7 @@ export function TodoItem({
             {todo.priority && (
               <span
                 className={cn(
-                  "text-[10px] font-bold px-1.5 py-0.2 rounded-md uppercase tracking-wider",
+                  "text-[11px] leading-[14px] font-semibold px-1.5 py-0.5 rounded-md uppercase tracking-[0.04em]",
                   todo.priority === "high"
                     ? "bg-rose-500/15 text-rose-600 dark:text-rose-400"
                     : todo.priority === "medium"
@@ -92,7 +92,7 @@ export function TodoItem({
               </span>
             )}
             {todo.category && (
-              <span className="text-[10px] text-neutral-400 font-mono">
+              <span className="text-[12px] leading-[16px] text-neutral-400 font-normal">
                 #{todo.category}
               </span>
             )}
@@ -108,7 +108,7 @@ export function TodoItem({
               variant="ghost"
               size="sm"
               className={cn(
-                "h-8 px-2.5 text-xs font-medium rounded-lg gap-1.5 transition-colors border",
+                "h-8 px-2.5 text-[13px] leading-[18px] font-medium rounded-lg gap-1.5 transition-colors border cursor-pointer",
                 variant === "destructive"
                   ? "text-red-500 bg-red-500/10 border-red-500/20"
                   : variant === "default"
@@ -121,15 +121,15 @@ export function TodoItem({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-3 rounded-xl border-neutral-200 dark:border-neutral-800 shadow-xl" align="end">
-            <div className="flex items-center justify-between pb-2 mb-1 border-b border-neutral-100 dark:border-neutral-800 px-1 text-xs">
-              <span className="font-medium text-neutral-500 flex items-center gap-1.5">
+            <div className="flex items-center justify-between pb-2 mb-1 border-b border-neutral-100 dark:border-neutral-800 px-1 text-[12px] leading-[16px]">
+              <span className="font-normal text-neutral-500 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#3bda71] animate-pulse" />
-                Today: <strong className="text-black dark:text-white font-bold">{format(new Date(), "MMM d")}</strong>
+                Today: <strong className="text-black dark:text-white font-semibold">{format(new Date(), "MMM d")}</strong>
               </span>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 px-2 text-[11px] font-semibold text-[#3bda71] hover:bg-[#3bda71]/15 rounded-md"
+                className="h-6 px-2 text-[12px] leading-[16px] font-medium text-[#3bda71] hover:bg-[#3bda71]/15 rounded-md cursor-pointer"
                 onClick={() => {
                   onUpdateDueDate(todo.id, new Date());
                   setOpenDatePopover(false);
@@ -152,7 +152,7 @@ export function TodoItem({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-full h-7 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 font-medium"
+                  className="w-full h-7 text-[12px] leading-[16px] text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 font-medium cursor-pointer"
                   onClick={() => {
                     onUpdateDueDate(todo.id, undefined);
                     setOpenDatePopover(false);

@@ -44,16 +44,16 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
                   <Keyboard className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-black dark:text-white tracking-tight">
+                  <h3 className="text-[18px] leading-[24px] font-semibold text-black dark:text-white">
                     Keyboard Shortcuts
                   </h3>
-                  <p className="text-xs text-neutral-400">Master TaskFlow at key speed</p>
+                  <p className="text-[12px] leading-[16px] text-neutral-400 font-normal">Master TaskFlow at key speed</p>
                 </div>
               </div>
 
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-xl text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                className="p-1.5 rounded-xl text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -63,20 +63,20 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
               {shortcuts.map((sc, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-800/80 text-xs"
+                  className="flex items-center justify-between p-3 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-800/80"
                 >
-                  <span className="text-neutral-600 dark:text-neutral-300 font-medium">
+                  <span className="text-[14px] leading-[20px] text-neutral-600 dark:text-neutral-300 font-medium">
                     {sc.label}
                   </span>
-                  <kbd className="px-2.5 py-1 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shadow-sm font-mono text-[11px] font-bold text-black dark:text-white">
+                  <kbd className="px-2.5 py-1 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shadow-sm font-mono text-[12px] leading-[16px] font-medium text-black dark:text-white">
                     {sc.key}
                   </kbd>
                 </div>
               ))}
             </div>
 
-            <div className="pt-2 text-center text-[11px] text-neutral-400">
-              Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border font-mono">Esc</kbd> anytime to dismiss
+            <div className="pt-2 text-center text-[12px] leading-[16px] text-neutral-400 font-normal">
+              Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">Esc</kbd> anytime to dismiss
             </div>
           </motion.div>
         </div>

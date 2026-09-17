@@ -10,7 +10,7 @@ export function FAQAccordion() {
   const faqs = [
     {
       q: "Do I need to create an account or sign in?",
-      a: "No! TaskFlow 2.0 operates instantly out of the box with zero sign-up friction. Your tasks are stored locally in your browser's persistent database.",
+      a: "No! taskflow operates instantly out of the box with zero sign-up friction. Your tasks are stored locally in your browser's persistent database.",
     },
     {
       q: "Is my task data safe and private?",
@@ -25,8 +25,8 @@ export function FAQAccordion() {
       a: "You can press ⌘N (or Ctrl+N) to quickly focus the task input, ⌘K to open search, and Space or Enter to toggle completion when navigating items.",
     },
     {
-      q: "Is TaskFlow free to use?",
-      a: "Yes! TaskFlow is completely free and open-access for personal and professional productivity.",
+      q: "Is taskflow free to use?",
+      a: "Yes! taskflow is completely free and open-access for personal and professional productivity.",
     },
   ];
 
@@ -34,11 +34,11 @@ export function FAQAccordion() {
     <section className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-8 sm:space-y-12">
       {/* Header */}
       <div className="text-center space-y-3 max-w-xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#3bda71]/10 border border-[#3bda71]/25 text-[11px] font-semibold tracking-wider text-[#3bda71] uppercase">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#3bda71]/10 border border-[#3bda71]/25 text-[11px] leading-[14px] font-semibold tracking-[0.04em] text-[#3bda71]">
           <HelpCircle className="w-3.5 h-3.5" />
-          <span>Frequently Asked Questions</span>
+          <span>Frequently asked questions</span>
         </div>
-        <h2 className="text-3xl sm:text-5xl font-black text-black dark:text-white tracking-tight uppercase">
+        <h2 className="text-3xl sm:text-5xl font-extrabold text-black dark:text-white tracking-[-0.02em]">
           Everything You <span className="text-[#3bda71]">Need to Know</span>
         </h2>
       </div>
@@ -58,7 +58,7 @@ export function FAQAccordion() {
             >
               <button
                 onClick={() => setOpenIdx(isOpen ? null : idx)}
-                className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-black dark:text-white hover:text-[#3bda71] transition-colors"
+                className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-semibold text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] text-black dark:text-white hover:text-[#3bda71] transition-colors cursor-pointer"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
@@ -76,7 +76,7 @@ export function FAQAccordion() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" as const }}
                   >
-                    <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed pt-0 border-t border-neutral-100 dark:border-neutral-800/60 mt-1">
+                    <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-[14px] leading-[20px] text-neutral-500 dark:text-neutral-400 font-normal pt-0 border-t border-neutral-100 dark:border-neutral-800/60 mt-1">
                       <p className="pt-3">{faq.a}</p>
                     </div>
                   </motion.div>

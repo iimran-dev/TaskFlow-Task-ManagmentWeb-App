@@ -62,17 +62,17 @@ export function TodoAddForm({
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="h-12 pl-4 pr-12 rounded-xl border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-black dark:text-white text-base font-normal focus-visible:ring-2 focus-visible:ring-[#3bda71] transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
+              className="h-12 pl-4 pr-12 rounded-xl border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-black dark:text-white text-[16px] leading-[24px] font-normal focus-visible:ring-2 focus-visible:ring-[#3bda71] transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 placeholder:text-[16px] placeholder:font-normal"
               disabled={addingTodo}
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-[11px] font-medium text-neutral-400 dark:text-neutral-500 bg-neutral-200/60 dark:bg-neutral-800 px-2 py-0.5 rounded-md pointer-events-none">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-[11px] leading-[14px] font-medium tracking-[0.04em] text-neutral-400 dark:text-neutral-500 bg-neutral-200/60 dark:bg-neutral-800 px-2 py-0.5 rounded-md pointer-events-none">
               ↵ Enter
             </div>
           </div>
           <Button
             onClick={onAddTodo}
             disabled={!newTitle.trim() || addingTodo}
-            className="h-12 px-6 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-sm text-sm font-semibold gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shrink-0 border-0 cursor-pointer"
+            className="h-12 px-6 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-sm text-[15px] leading-[22px] font-medium gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shrink-0 border-0 cursor-pointer"
           >
             {addingTodo ? (
               <motion.div
@@ -96,22 +96,22 @@ export function TodoAddForm({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 px-3 rounded-lg text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] bg-neutral-50 dark:bg-neutral-950 transition-colors cursor-pointer"
+                  className="h-8 px-3 rounded-lg text-[13px] leading-[18px] font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] bg-neutral-50 dark:bg-neutral-950 transition-colors cursor-pointer"
                 >
                   <CalendarIcon className="w-3.5 h-3.5 mr-1.5 text-[#3bda71]" />
                   {newDate ? format(newDate, "MMM d, yyyy") : "Set Due Date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-3 rounded-xl border-neutral-200 dark:border-neutral-800 shadow-xl" align="start">
-                <div className="flex items-center justify-between pb-2 mb-1 border-b border-neutral-100 dark:border-neutral-800 px-1 text-xs">
-                  <span className="font-medium text-neutral-500 flex items-center gap-1.5">
+                <div className="flex items-center justify-between pb-2 mb-1 border-b border-neutral-100 dark:border-neutral-800 px-1 text-[12px] leading-[16px]">
+                  <span className="font-normal text-neutral-500 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-[#3bda71] animate-pulse" />
-                    Today: <strong className="text-black dark:text-white font-bold">{format(new Date(), "MMM d")}</strong>
+                    Today: <strong className="text-black dark:text-white font-semibold">{format(new Date(), "MMM d")}</strong>
                   </span>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-6 px-2 text-[11px] font-semibold text-[#3bda71] hover:bg-[#3bda71]/15 rounded-md cursor-pointer"
+                    className="h-6 px-2 text-[12px] leading-[16px] font-medium text-[#3bda71] hover:bg-[#3bda71]/15 rounded-md cursor-pointer"
                     onClick={() => setNewDate(new Date())}
                   >
                     Set Today
@@ -129,7 +129,7 @@ export function TodoAddForm({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 text-xs text-neutral-400 hover:text-red-500 font-normal cursor-pointer"
+                className="h-8 text-[12px] leading-[16px] text-neutral-400 hover:text-red-500 font-normal cursor-pointer"
                 onClick={() => setNewDate(undefined)}
               >
                 Clear date
@@ -137,7 +137,7 @@ export function TodoAddForm({
             )}
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-400 dark:text-neutral-500 font-normal">
+          <div className="hidden sm:flex items-center gap-1.5 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal">
             <span className="w-2 h-2 rounded-full bg-[#3bda71]" />
             <span>Optimistic Sync</span>
           </div>

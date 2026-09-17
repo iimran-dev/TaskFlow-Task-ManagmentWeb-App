@@ -30,12 +30,12 @@ export function TodoProgress({ totalTodos, completedCount }: TodoProgressProps) 
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-black dark:text-white">
+          <span className="text-[16px] leading-[24px] font-semibold text-black dark:text-white">
             Daily Goal
           </span>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-black text-[#3bda71]">
+          <span className="text-[34px] leading-[40px] font-bold text-[#3bda71] tracking-[-0.03em]">
             {percentage}%
           </span>
         </div>
@@ -53,12 +53,12 @@ export function TodoProgress({ totalTodos, completedCount }: TodoProgressProps) 
         />
       </div>
 
-      <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 font-normal pt-0.5">
-        <span className="flex items-center gap-1.5">
+      <div className="flex items-center justify-between pt-0.5">
+        <span className="flex items-center gap-1.5 text-[14px] leading-[20px] font-normal text-neutral-500 dark:text-neutral-400">
           <CheckCircle2 className="w-3.5 h-3.5 text-[#3bda71]" />
           {completedCount} of {totalTodos} completed
         </span>
-        <span className="font-medium text-black dark:text-white">
+        <span className="text-[14px] leading-[20px] font-medium text-black dark:text-white">
           {getMotivationMessage(percentage)}
         </span>
       </div>

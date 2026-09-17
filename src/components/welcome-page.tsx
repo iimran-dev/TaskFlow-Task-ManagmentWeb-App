@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,14 @@ interface WelcomePageProps {
 
 export function WelcomePage({ onGetStarted }: WelcomePageProps) {
   const [activeStep, setActiveStep] = useState(0);
+  const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const heroTriggerRef = useRef<HTMLDivElement>(null);
 
   const steps = [
     {
       num: "01",
       title: "Hyper focus mode",
-      desc: "start by organizing your daily targets with smart priorities",
+      desc: "Start by organizing your daily targets with smart priorities",
       image: "/papercut2.svg",
       fallback: "https://images.unsplash.com/",
       tag: "Focus",
@@ -27,14 +29,14 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
     {
       num: "02",
       title: "Lightning fast execution",
-      desc: "instant optimistic updates ensure zero lag on every task",
+      desc: "Instant optimistic updates ensure zero lag on every task",
       image: "/papercut3.svg",
       tag: "Speed",
     },
     {
       num: "03",
       title: "Minimalist designer ui",
-      desc: "fluid interactive transitions and experience",
+      desc: "Fluid interactive transitions and experience",
       image: "/papercut1.svg",
       tag: "Design",
     },
@@ -46,6 +48,18 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
     }, 4500);
     return () => clearInterval(timer);
   }, [steps.length]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!heroTriggerRef.current) return;
+      const rect = heroTriggerRef.current.getBoundingClientRect();
+      setShowStickyBtn(rect.bottom < 0);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <motion.div
@@ -60,8 +74,27 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
       </div>
 
-      {/* Theme toggle in top-right */}
-      <div className="fixed top-6 right-6 z-50">
+      {/* Top action bar: Sticky Try Now + Theme Toggle */}
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-2 sm:gap-2.5">
+        <AnimatePresence>
+          {showStickyBtn && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, x: 10 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: 10 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <Button
+                onClick={onGetStarted}
+                className="h-10 px-4 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-[13px] leading-[18px] font-medium gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 border-0 cursor-pointer"
+              >
+                <span>Try Now</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="p-1 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm">
           <ThemeToggle />
         </div>
@@ -80,14 +113,14 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
           {/* Top Pill Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 backdrop-blur-md">
             <img src="/logo.png" alt="TaskFlow Logo" className="w-4 h-4 rounded-full object-cover" />
-            <span className="text-[11px] sm:text-xs font-medium tracking-wide text-neutral-800 dark:text-[#3bda71] uppercase">
-              TaskFlow 2.0 &bull; Next-Gen Todo Experience
+            <span className="text-[11px] leading-[14px] font-medium tracking-[0.04em] text-neutral-800 dark:text-[#3bda71]">
+              taskflow &bull; Next-Gen Todo Experience
             </span>
           </div>
 
           {/* Main Headline - Viewport display text */}
           <div className="space-y-4 sm:space-y-5">
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-black dark:text-white uppercase flex flex-col items-center justify-center gap-1 sm:gap-3 leading-none">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-[-0.02em] text-black dark:text-white uppercase flex flex-col items-center justify-center gap-1 sm:gap-3 leading-none">
               <span className="inline-flex items-center justify-center gap-1.5 sm:gap-3 leading-none">
                 <span>Effort</span>
                 <span className="bg-[#3bda71] text-black dark:text-black px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl leading-none">
@@ -98,7 +131,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
                 Flow
               </span>
             </h1>
-            <p className="text-base sm:text-xl text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto leading-relaxed font-normal pt-1">
+            <p className="text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto font-normal pt-1">
               A responsive task workspace designed for clarity and seamless productivity.
             </p>
           </div>
@@ -113,13 +146,16 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
             <Button
               onClick={onGetStarted}
               size="lg"
-              className="h-12 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-base sm:text-lg font-semibold gap-2.5 group transition-all duration-200 hover:scale-105 active:scale-95 border-0 mb-5"
+              className="h-12 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] font-medium gap-2.5 group transition-all duration-200 hover:scale-105 active:scale-95 border-0 mb-5 cursor-pointer"
             >
               Try Now
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </Button>
 
-            <div className="flex items-center gap-2 text-xs text-neutral-400 dark:text-neutral-500 font-normal">
+            <div
+              ref={heroTriggerRef}
+              className="flex items-center gap-2 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal"
+            >
               <ShieldCheck className="w-4 h-4 text-[#3bda71]" />
               <span>No signup required &bull; Persistent local database</span>
             </div>
@@ -186,7 +222,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
                   >
                     <div className="flex items-center gap-2.5">
                       <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${isActive
+                        className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] leading-[14px] font-semibold transition-all ${isActive
                             ? "bg-[#3bda71]/20 text-[#3bda71]"
                             : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500"
                           }`}
@@ -194,18 +230,18 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
                         {step.num}
                       </div>
                       <h3
-                        className={`text-base sm:text-lg font-bold tracking-tight lowercase transition-colors ${isActive
-                            ? "text-black dark:text-white"
-                            : "text-neutral-400 dark:text-neutral-600"
+                        className={`text-[16px] sm:text-[18px] leading-[24px] font-semibold tracking-[-0.02em] transition-colors ${isActive
+                          ? "text-black dark:text-white"
+                          : "text-neutral-400 dark:text-neutral-600"
                           }`}
                       >
                         {step.title}
                       </h3>
                     </div>
                     <p
-                      className={`text-xs leading-relaxed lowercase font-normal pl-9 ${isActive
-                          ? "text-neutral-500 dark:text-neutral-400"
-                          : "text-neutral-400 dark:text-neutral-600"
+                      className={`text-[13px] leading-[18px] font-normal pl-9 ${isActive
+                        ? "text-neutral-500 dark:text-neutral-400"
+                        : "text-neutral-400 dark:text-neutral-600"
                         }`}
                     >
                       {step.desc}
@@ -235,21 +271,21 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
 
           <div className="relative z-10 space-y-3 sm:space-y-4">
             {/* Giant Brand Typography */}
-            <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none uppercase select-none">
-              <span className="text-[#3bda71]">Task</span>
-              <span className="text-black dark:text-white">Flow</span>
+            <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-none select-none">
+              <span className="text-[#3bda71]">task</span>
+              <span className="text-black dark:text-white">flow</span>
             </h2>
 
             {/* Sub-links */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-400 pt-2 font-medium">
-              <button onClick={onGetStarted} className="hover:text-[#3bda71] transition-colors">Workspace</button>
+            <div className="flex flex-wrap items-center justify-center gap-6 text-[13px] leading-[18px] text-neutral-400 pt-2 font-medium">
+              <button onClick={onGetStarted} className="hover:text-[#3bda71] transition-colors cursor-pointer">Workspace</button>
               <span className="text-neutral-700">•</span>
-              <a href="#faq" className="hover:text-[#3bda71] transition-colors">FAQ</a>
+              <a href="#faq" className="hover:text-[#3bda71] transition-colors cursor-pointer">FAQ</a>
             </div>
 
             {/* Copyright Subtext */}
-            <p className="text-[10px] sm:text-xs text-neutral-500 font-normal tracking-widest uppercase pt-2">
-              &copy; {new Date().getFullYear()} TaskFlow 2.0 &bull; Crafted with Next.js, Framer Motion & TailwindCSS
+            <p className="text-[11px] leading-[14px] text-neutral-500 font-normal tracking-[0.04em] uppercase pt-2">
+              &copy; {new Date().getFullYear()} taskflow
             </p>
           </div>
         </div>

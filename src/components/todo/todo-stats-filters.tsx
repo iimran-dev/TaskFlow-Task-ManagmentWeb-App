@@ -48,10 +48,10 @@ export function TodoStatsFilters({
               <Layers className="w-3.5 h-3.5 sm:w-5 sm:h-5 stroke-[2]" />
             </div>
             <div>
-              <div className="text-base sm:text-2xl font-bold text-black dark:text-white leading-none sm:leading-tight font-mono">
+              <div className="text-[28px] leading-[32px] font-bold text-black dark:text-white tracking-[-0.03em]">
                 {totalTodos}
               </div>
-              <div className="text-[10px] sm:text-[11px] font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mt-0.5 sm:mt-0">
+              <div className="text-[12px] leading-[16px] font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.04em] mt-0.5">
                 Total
               </div>
             </div>
@@ -62,10 +62,10 @@ export function TodoStatsFilters({
               <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 stroke-[2]" />
             </div>
             <div>
-              <div className="text-base sm:text-2xl font-bold text-[#3bda71] leading-none sm:leading-tight font-mono">
+              <div className="text-[28px] leading-[32px] font-bold text-[#3bda71] tracking-[-0.03em]">
                 {completedCount}
               </div>
-              <div className="text-[10px] sm:text-[11px] font-medium text-[#3bda71]/80 uppercase tracking-wider mt-0.5 sm:mt-0">
+              <div className="text-[12px] leading-[16px] font-medium text-[#3bda71]/80 uppercase tracking-[0.04em] mt-0.5">
                 Done
               </div>
             </div>
@@ -76,10 +76,10 @@ export function TodoStatsFilters({
               <Clock className="w-3.5 h-3.5 sm:w-5 sm:h-5 stroke-[2]" />
             </div>
             <div>
-              <div className="text-base sm:text-2xl font-bold text-black dark:text-white leading-none sm:leading-tight font-mono">
+              <div className="text-[28px] leading-[32px] font-bold text-black dark:text-white tracking-[-0.03em]">
                 {activeCount}
               </div>
-              <div className="text-[10px] sm:text-[11px] font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mt-0.5 sm:mt-0">
+              <div className="text-[12px] leading-[16px] font-medium text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.04em] mt-0.5">
                 Active
               </div>
             </div>
@@ -97,10 +97,10 @@ export function TodoStatsFilters({
                 key={option.type}
                 onClick={() => setFilter(option.type)}
                 className={cn(
-                  "relative flex-1 py-1.5 sm:py-2 text-center rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 z-10 truncate cursor-pointer",
+                  "relative flex-1 py-1.5 sm:py-2 text-center rounded-lg text-[13px] leading-[18px] transition-colors duration-200 z-10 truncate cursor-pointer",
                   isActive
                     ? "text-black font-semibold"
-                    : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+                    : "text-neutral-500 dark:text-neutral-400 font-medium hover:text-black dark:hover:text-white"
                 )}
               >
                 {isActive && (
@@ -124,10 +124,10 @@ export function TodoStatsFilters({
               size="sm"
               onClick={onToggleFocusMode}
               className={cn(
-                "h-9 px-3 rounded-xl text-xs font-semibold gap-1.5 border transition-all cursor-pointer shadow-sm",
+                "h-9 px-3 rounded-xl text-[13px] leading-[18px] gap-1.5 border transition-all cursor-pointer shadow-sm",
                 isFocusMode
-                  ? "bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border-[#3bda71] dark:border-[#3bda71] font-bold hover:bg-[#34c666] dark:hover:bg-[#34c666]"
-                  : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white hover:border-[#3bda71]"
+                  ? "bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border-[#3bda71] dark:border-[#3bda71] font-semibold hover:bg-[#34c666] dark:hover:bg-[#34c666]"
+                  : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium hover:text-black dark:hover:text-white hover:border-[#3bda71]"
               )}
               title={isFocusMode ? "Exit Focus Mode" : "Enter Focus Mode"}
             >
@@ -136,7 +136,7 @@ export function TodoStatsFilters({
               ) : (
                 <Maximize2 className="w-3.5 h-3.5 stroke-[2.5]" />
               )}
-              <span className={cn("font-semibold", isFocusMode ? "text-black dark:text-black font-bold" : "")}>
+              <span className={cn(isFocusMode ? "font-semibold text-black dark:text-black" : "font-medium")}>
                 {isFocusMode ? "Exit Focus" : "Focus Mode"}
               </span>
             </Button>
@@ -147,7 +147,7 @@ export function TodoStatsFilters({
               variant="outline"
               size="sm"
               onClick={onOpenShortcuts}
-              className="h-9 px-2.5 rounded-xl text-xs font-semibold bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white cursor-pointer"
+              className="h-9 px-2.5 rounded-xl text-[13px] leading-[18px] font-medium bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white cursor-pointer"
               title="Keyboard Shortcuts (?)"
             >
               <Keyboard className="w-3.5 h-3.5" />

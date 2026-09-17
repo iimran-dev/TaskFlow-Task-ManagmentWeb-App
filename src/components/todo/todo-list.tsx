@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Sparkles, Inbox } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TodoItem } from "@/components/todo/todo-item";
 import { Todo, FilterType } from "@/types/todo";
@@ -51,27 +50,16 @@ export function TodoList({
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-neutral-900 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-800 p-12 text-center shadow-sm"
+        className="bg-white dark:bg-neutral-900 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-800 p-10 text-center shadow-sm"
       >
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#3bda71]/15 flex items-center justify-center border border-[#3bda71]/30">
-            {filter === "completed" ? (
-              <CheckCircle2 className="w-8 h-8 text-[#3bda71] stroke-[2.5]" />
-            ) : filter === "active" ? (
-              <Sparkles className="w-8 h-8 text-[#3bda71] stroke-[2.5]" />
-            ) : (
-              <Inbox className="w-8 h-8 text-[#3bda71] stroke-[2.5]" />
-            )}
-          </div>
-        </div>
-        <h3 className="text-xl font-black text-black dark:text-white mb-2 tracking-tight">
+        <h3 className="text-[20px] leading-[28px] font-semibold text-black dark:text-white mb-2">
           {filter === "all"
             ? "No tasks on your radar"
             : filter === "active"
               ? "All active tasks completed"
               : "No completed tasks yet"}
         </h3>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-sm mx-auto font-medium leading-relaxed">
+        <p className="text-[14px] leading-[20px] text-neutral-500 dark:text-neutral-400 max-w-sm mx-auto font-normal">
           {filter === "all"
             ? "Add your first task above to start building momentum!"
             : filter === "active"
