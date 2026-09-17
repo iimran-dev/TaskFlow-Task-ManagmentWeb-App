@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Command, Shield, SlidersHorizontal, Sparkles, CheckCircle2 } from "lucide-react";
+import {Command, Shield,CheckCircle2 } from "lucide-react";
 
 export function BentoFeatures() {
   const containerVariants = {
