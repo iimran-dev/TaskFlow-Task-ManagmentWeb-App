@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   title: "TaskFlow - Modern To-Do App",
   description: "A beautiful, modern to-do application to help you stay organized and get things done.",
   keywords: ["TaskFlow", "Todo", "Productivity", "Next.js", "TypeScript"],
-  authors: [{ name: "Z.ai Team" }],
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
