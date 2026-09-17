@@ -6,9 +6,7 @@ import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BentoFeatures } from "@/components/home/bento-features";
-import { WorkflowTimeline } from "@/components/home/workflow-timeline";
 import { FAQAccordion } from "@/components/home/faq-accordion";
-import { CTASection } from "@/components/home/cta-section";
 
 interface WelcomePageProps {
   onGetStarted: () => void;
@@ -125,39 +123,6 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
               <ShieldCheck className="w-4 h-4 text-[#3bda71]" />
               <span>No signup required &bull; Persistent local database</span>
             </div>
-
-            {/* App Preview Image Showcase with Floating Motion Badges */}
-            <div className="mt-6 sm:mt-8 max-w-3xl w-full mx-auto relative group">
-              {/* Floating Glassmorphic Motion Badge Left */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                className="hidden sm:flex absolute -top-5 -left-6 z-20 items-center gap-2 px-3.5 py-2 rounded-xl bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-neutral-200 dark:border-neutral-800 shadow-lg text-xs font-semibold text-black dark:text-white"
-              >
-                <div className="w-5 h-5 rounded-md bg-[#3bda71] text-black flex items-center justify-center font-bold">
-                  ✓
-                </div>
-                <span>Daily Targets 100%</span>
-              </motion.div>
-
-              {/* Floating Glassmorphic Motion Badge Right */}
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="hidden sm:flex absolute -bottom-5 -right-6 z-20 items-center gap-2 px-3.5 py-2 rounded-xl bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-neutral-200 dark:border-neutral-800 shadow-lg text-xs font-semibold text-black dark:text-white"
-              >
-                <Zap className="w-4 h-4 text-[#3bda71] fill-[#3bda71]" />
-                <span>Optimistic Sync &bull; 0ms</span>
-              </motion.div>
-
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-neutral-200/80 dark:border-neutral-800/80 shadow-xl bg-black p-2 sm:p-2.5">
-                <img
-                  src="/image.png"
-                  alt="TaskFlow Workspace Preview"
-                  className="w-full h-auto rounded-xl sm:rounded-2xl object-cover"
-                />
-              </div>
-            </div>
           </motion.div>
         </motion.div>
 
@@ -256,14 +221,9 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
         {/* Bento Features Grid */}
         <BentoFeatures />
 
-        {/* 3-Step Routine Visual Timeline */}
-        <WorkflowTimeline />
 
         {/* FAQ Accordion Section */}
         <FAQAccordion />
-
-        {/* High Impact Call-to-Action Banner */}
-        <CTASection onGetStarted={onGetStarted} />
 
       </div>
 
@@ -283,10 +243,6 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
             {/* Sub-links */}
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-400 pt-2 font-medium">
               <button onClick={onGetStarted} className="hover:text-[#3bda71] transition-colors">Workspace</button>
-              <span className="text-neutral-700">•</span>
-              <a href="#bento" className="hover:text-[#3bda71] transition-colors">Features</a>
-              <span className="text-neutral-700">•</span>
-              <a href="#demo" className="hover:text-[#3bda71] transition-colors">Interactive Demo</a>
               <span className="text-neutral-700">•</span>
               <a href="#faq" className="hover:text-[#3bda71] transition-colors">FAQ</a>
             </div>

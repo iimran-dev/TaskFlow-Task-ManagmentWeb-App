@@ -18,7 +18,6 @@ export function TaskPresets({ onSelectPreset }: TaskPresetsProps) {
   return (
     <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
       <span className="text-neutral-400 font-medium shrink-0 flex items-center gap-1">
-        <Sparkles className="w-3 h-3 text-[#3bda71]" />
         Presets:
       </span>
       {presets.map((p, idx) => (

@@ -27,10 +27,6 @@ export function BentoFeatures() {
     <section className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-10 sm:space-y-14">
       {/* Section Header */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#3bda71]/10 border border-[#3bda71]/25 text-[11px] font-semibold tracking-wider text-[#3bda71] uppercase">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Built for Velocity</span>
-        </div>
         <h2 className="text-3xl sm:text-5xl font-black text-black dark:text-white tracking-tight uppercase">
           Engineered for <span className="text-[#3bda71]">Deep Work</span>
         </h2>

@@ -30,11 +30,6 @@ export function TodoProgress({ totalTodos, completedCount }: TodoProgressProps) 
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {percentage === 100 ? (
-            <Trophy className="w-5 h-5 text-[#3bda71] stroke-[2.5]" />
-          ) : (
-            <Sparkles className="w-5 h-5 text-[#3bda71] stroke-[2.5]" />
-          )}
           <span className="text-sm font-bold text-black dark:text-white">
             Daily Goal
           </span>
