@@ -53,16 +53,16 @@ export function TodoAddForm({
       transition={{ duration: 0.4, delay: 0.1 }}
       className="relative group space-y-2.5"
     >
-      <div className={`bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm transition-all group-hover:border-[#3bda71] ${isFocusMode ? "p-3 sm:p-4 space-y-2.5" : "p-4 sm:p-5 space-y-3.5"}`}>
-        <div className="flex flex-col sm:flex-row gap-3">
+      <div className={`bg-white dark:bg-neutral-900 rounded-xl sm:rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm transition-all group-hover:border-[#3bda71] ${isFocusMode ? "p-3 sm:p-4 space-y-2 sm:space-y-2.5" : "p-3 sm:p-5 space-y-2.5 sm:space-y-3.5"}`}>
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative flex-1">
             <Input
               ref={titleInputRef}
-              placeholder="What needs to be accomplished? (⌘N)"
+              placeholder="What needs to be accomplished?"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="h-12 pl-4 pr-12 rounded-xl border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-black dark:text-white text-[16px] leading-[24px] font-normal focus-visible:ring-2 focus-visible:ring-[#3bda71] transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 placeholder:text-[16px] placeholder:font-normal"
+              className="h-11 sm:h-12 pl-3.5 sm:pl-4 pr-3 sm:pr-12 rounded-xl border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-black dark:text-white text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] font-normal focus-visible:ring-2 focus-visible:ring-[#3bda71] transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 placeholder:text-[14px] sm:placeholder:text-[16px] placeholder:font-normal"
               disabled={addingTodo}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-[11px] leading-[14px] font-medium tracking-[0.04em] text-neutral-400 dark:text-neutral-500 bg-neutral-200/60 dark:bg-neutral-800 px-2 py-0.5 rounded-md pointer-events-none">
@@ -72,31 +72,32 @@ export function TodoAddForm({
           <Button
             onClick={onAddTodo}
             disabled={!newTitle.trim() || addingTodo}
-            className="h-12 px-6 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-sm text-[15px] leading-[22px] font-medium gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shrink-0 border-0 cursor-pointer"
+            className="h-11 sm:h-12 w-11 sm:w-auto px-0 sm:px-6 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-sm text-[15px] leading-[22px] font-semibold sm:font-medium gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shrink-0 border-0 cursor-pointer flex items-center justify-center"
+            title="Add Task"
           >
             {addingTodo ? (
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" as const }}
-                className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full"
+                className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-black/30 border-t-black rounded-full"
               />
             ) : (
               <>
                 <Plus className="w-5 h-5 stroke-[2.5]" />
-                <span>Add Task</span>
+                <span className="hidden sm:inline">Add Task</span>
               </>
             )}
           </Button>
         </div>
 
-        <div className="flex items-center justify-between pt-1">
+        <div className="flex items-center justify-between pt-0.5">
           <div className="flex items-center gap-2">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 px-3 rounded-lg text-[13px] leading-[18px] font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] bg-neutral-50 dark:bg-neutral-950 transition-colors cursor-pointer"
+                  className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] bg-neutral-50 dark:bg-neutral-950 transition-colors cursor-pointer"
                 >
                   <CalendarIcon className="w-3.5 h-3.5 mr-1.5 text-[#3bda71]" />
                   {newDate ? format(newDate, "MMM d, yyyy") : "Set Due Date"}
@@ -129,7 +130,7 @@ export function TodoAddForm({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 text-[12px] leading-[16px] text-neutral-400 hover:text-red-500 font-normal cursor-pointer"
+                className="h-7 sm:h-8 text-[11px] sm:text-[12px] leading-[16px] text-neutral-400 hover:text-red-500 font-normal cursor-pointer px-1.5"
                 onClick={() => setNewDate(undefined)}
               >
                 Clear date

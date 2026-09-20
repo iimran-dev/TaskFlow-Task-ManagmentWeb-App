@@ -26,23 +26,26 @@ export function TodoProgress({ totalTodos, completedCount }: TodoProgressProps) 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.25 }}
-      className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 shadow-sm space-y-3"
+      className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl sm:rounded-2xl p-3 sm:p-4.5 shadow-sm space-y-2 sm:space-y-2.5"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[16px] leading-[24px] font-semibold text-black dark:text-white">
+          <span className="text-[14px] sm:text-[16px] leading-[20px] sm:leading-[24px] font-semibold text-black dark:text-white">
             Daily Goal
+          </span>
+          <span className="text-[11px] sm:text-[12px] font-medium text-neutral-400 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full">
+            {completedCount} of {totalTodos}
           </span>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-[34px] leading-[40px] font-bold text-[#3bda71] tracking-[-0.03em]">
+          <span className="text-[20px] sm:text-[28px] leading-[24px] sm:leading-[32px] font-bold text-[#3bda71] tracking-[-0.03em]">
             {percentage}%
           </span>
         </div>
       </div>
 
       {/* Progress Bar Container */}
-      <div className="relative h-2.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+      <div className="relative h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{
@@ -53,12 +56,12 @@ export function TodoProgress({ totalTodos, completedCount }: TodoProgressProps) 
         />
       </div>
 
-      <div className="flex items-center justify-between pt-0.5">
-        <span className="flex items-center gap-1.5 text-[14px] leading-[20px] font-normal text-neutral-500 dark:text-neutral-400">
-          <CheckCircle2 className="w-3.5 h-3.5 text-[#3bda71]" />
-          {completedCount} of {totalTodos} completed
+      <div className="flex items-center justify-between pt-0.5 text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px]">
+        <span className="flex items-center gap-1.5 font-normal text-neutral-500 dark:text-neutral-400">
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#3bda71] shrink-0" />
+          <span>{percentage === 100 ? "All completed!" : `${totalTodos - completedCount} remaining`}</span>
         </span>
-        <span className="text-[14px] leading-[20px] font-medium text-black dark:text-white">
+        <span className="font-medium text-neutral-700 dark:text-neutral-300 truncate ml-2">
           {getMotivationMessage(percentage)}
         </span>
       </div>

@@ -42,7 +42,7 @@ export function TodoItem({
       exit={{ opacity: 0, x: -60, scale: 0.95 }}
       transition={{ duration: 0.3, ease: "easeOut" as const }}
       className={cn(
-        "group relative bg-white dark:bg-neutral-900 rounded-xl border p-4 flex items-center gap-3.5 transition-all duration-200 shadow-sm",
+        "group relative bg-white dark:bg-neutral-900 rounded-xl border p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 transition-all duration-200 shadow-sm",
         todo.completed
           ? "border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-950/40 opacity-70"
           : "border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71]"
@@ -54,7 +54,7 @@ export function TodoItem({
           checked={todo.completed}
           onCheckedChange={() => onToggle(todo.id, todo.completed)}
           className={cn(
-            "w-5 h-5 rounded-md transition-all duration-200 flex items-center justify-center border-2",
+            "w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-md transition-all duration-200 flex items-center justify-center border-2",
             todo.completed
               ? "data-[state=checked]:bg-[#3bda71] data-[state=checked]:text-black data-[state=checked]:border-[#3bda71]"
               : "border-neutral-300 dark:border-neutral-700 hover:border-[#3bda71]"
@@ -66,7 +66,7 @@ export function TodoItem({
       <div className="flex-1 min-w-0 space-y-0.5">
         <span
           className={cn(
-            "text-[16px] leading-[24px] font-medium transition-all duration-200 block truncate",
+            "text-[14px] sm:text-[16px] leading-[20px] sm:leading-[24px] font-medium transition-all duration-200 block truncate",
             todo.completed
               ? "text-neutral-400 dark:text-neutral-500 line-through decoration-neutral-400 decoration-1"
               : "text-black dark:text-white"
@@ -80,7 +80,7 @@ export function TodoItem({
             {todo.priority && (
               <span
                 className={cn(
-                  "text-[11px] leading-[14px] font-semibold px-1.5 py-0.5 rounded-md uppercase tracking-[0.04em]",
+                  "text-[10px] sm:text-[11px] leading-[13px] sm:leading-[14px] font-semibold px-1.5 py-0.5 rounded-md uppercase tracking-[0.04em]",
                   todo.priority === "high"
                     ? "bg-rose-500/15 text-rose-600 dark:text-rose-400"
                     : todo.priority === "medium"
@@ -92,7 +92,7 @@ export function TodoItem({
               </span>
             )}
             {todo.category && (
-              <span className="text-[12px] leading-[16px] text-neutral-400 font-normal">
+              <span className="text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] text-neutral-400 font-normal">
                 #{todo.category}
               </span>
             )}
@@ -101,14 +101,14 @@ export function TodoItem({
       </div>
 
       {/* Right Action Items */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         <Popover open={isOpenDatePopover} onOpenChange={setOpenDatePopover}>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="sm"
               className={cn(
-                "h-8 px-2.5 text-[13px] leading-[18px] font-medium rounded-lg gap-1.5 transition-colors border cursor-pointer",
+                "h-7 sm:h-8 px-2 sm:px-2.5 text-[11px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium rounded-lg gap-1.5 transition-colors border cursor-pointer",
                 variant === "destructive"
                   ? "text-red-500 bg-red-500/10 border-red-500/20"
                   : variant === "default"

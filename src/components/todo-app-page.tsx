@@ -317,25 +317,25 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
 
       {/* Top Navigation Bar (Hidden in Focus Mode) */}
       {!isFocusMode && (
-        <header className="py-4 px-6 sm:px-8 border-b border-neutral-200/80 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
+        <header className="py-2.5 sm:py-4 px-3.5 sm:px-8 border-b border-neutral-200/80 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
           <div className="max-w-2xl mx-auto flex items-center justify-between">
             <motion.div
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex items-center gap-3"
+              className="flex items-center gap-2.5 sm:gap-3"
             >
-              <div className="w-9 h-9 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm bg-[#3bda71]">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm bg-[#3bda71] shrink-0">
                 <img src="/logo.png" alt="TaskFlow Logo" className="w-full h-full object-cover" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[18px] sm:text-[20px] leading-[24px] font-semibold tracking-[-0.02em] text-black dark:text-white">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[16px] sm:text-[20px] leading-[22px] sm:leading-[24px] font-semibold tracking-[-0.02em] text-black dark:text-white">
                     taskflow.
                   </span>
                 </div>
-                <p className="text-[12px] leading-[16px] text-neutral-500 dark:text-neutral-400 font-normal">
-                  {format(new Date(), "EEEE, MMMM d, yyyy")}
+                <p className="text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] text-neutral-500 dark:text-neutral-400 font-normal">
+                  {format(new Date(), "EEEE, MMM d")}
                 </p>
               </div>
             </motion.div>
@@ -344,20 +344,20 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
               initial={{ opacity: 0, x: 15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 sm:gap-2"
             >
               {onBack && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onBack}
-                  className="h-11 px-3.5 rounded-lg text-[14px] leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
+                  className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-lg text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Home</span>
+                  <span className="hidden xs:inline">Home</span>
                 </Button>
               )}
-              <div className="p-1 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm">
+              <div className="p-0.5 sm:p-1 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm">
                 <ThemeToggle />
               </div>
             </motion.div>
@@ -366,8 +366,8 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       )}
 
       {/* Main App Workspace */}
-      <main className={`flex-1 px-4 sm:px-6 ${isFocusMode ? "py-6 sm:py-8" : "py-6 sm:py-8"}`}>
-        <div className={`mx-auto transition-all duration-300 ${isFocusMode ? "max-w-xl space-y-3.5" : "max-w-2xl space-y-5 sm:space-y-6"}`}>
+      <main className={`flex-1 px-3 sm:px-6 ${isFocusMode ? "py-3 sm:py-6" : "py-3 sm:py-6"}`}>
+        <div className={`mx-auto transition-all duration-300 ${isFocusMode ? "max-w-xl space-y-2.5 sm:space-y-3.5" : "max-w-2xl space-y-3 sm:space-y-4.5"}`}>
 
           {/* Header Section (Condensed 1-line bar in Focus Mode vs Full Hero in Normal Mode) */}
           {isFocusMode ? (
@@ -378,11 +378,11 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
             >
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#3bda71] animate-pulse" />
-                <h2 className="text-[18px] leading-[24px] font-semibold text-black dark:text-white tracking-[-0.02em]">
+                <h2 className="text-[16px] sm:text-[18px] leading-[22px] sm:leading-[24px] font-semibold text-black dark:text-white tracking-[-0.02em]">
                   Focus Workspace
                 </h2>
               </div>
-              <span className="text-[13px] leading-[18px] font-medium text-neutral-500 dark:text-neutral-400">
+              <span className="text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-neutral-500 dark:text-neutral-400">
                 {activeCount} active task{activeCount === 1 ? "" : "s"}
               </span>
             </motion.div>
@@ -391,21 +391,21 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex items-center justify-between pt-1"
+              className="flex items-center justify-between pt-0.5"
             >
-              <div className="space-y-1 text-left">
-                <h1 className="text-[28px] sm:text-[32px] leading-[36px] sm:leading-[40px] font-bold text-black dark:text-white tracking-[-0.02em] flex items-center gap-2">
+              <div className="space-y-0.5 sm:space-y-1 text-left">
+                <h1 className="text-[22px] sm:text-[30px] leading-[28px] sm:leading-[38px] font-bold text-black dark:text-white tracking-[-0.02em] flex items-center gap-2">
                   <span>{getGreeting()}</span>
                   <span className="inline-block w-2 h-2 rounded-full bg-[#3bda71] align-baseline" />
                 </h1>
-                <p className="text-[14px] sm:text-[15px] leading-[20px] sm:leading-[22px] text-neutral-500 dark:text-neutral-400 font-normal">
+                <p className="text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] text-neutral-500 dark:text-neutral-400 font-normal">
                   Clean overview of your daily focus and targets.
                 </p>
               </div>
 
               {completedCount > 0 && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-[13px] leading-[18px] font-medium text-black dark:text-[#3bda71] shrink-0">
-                  <Flame className="w-4 h-4 text-[#3bda71] fill-[#3bda71]" />
+                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-black dark:text-[#3bda71] shrink-0">
+                  <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#3bda71] fill-[#3bda71]" />
                   <span>{completedCount} Done</span>
                 </div>
               )}

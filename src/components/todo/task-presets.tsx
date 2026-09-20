@@ -14,15 +14,15 @@ export function TaskPresets({ onSelectPreset }: TaskPresetsProps) {
   ];
 
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-      <span className="text-neutral-400 text-[12px] leading-[18px] font-medium shrink-0 flex items-center gap-1">
-        Presets:
+    <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 pt-0.5 scrollbar-none -mx-0.5 px-0.5">
+      <span className="text-neutral-400 dark:text-neutral-500 text-[11px] sm:text-[12px] font-medium shrink-0">
+        Quick:
       </span>
       {presets.map((p, idx) => (
         <button
           key={idx}
           onClick={() => onSelectPreset(p.title, p.priority, p.category)}
-          className="px-2.5 py-1 rounded-lg bg-neutral-100 dark:bg-neutral-800/70 border border-neutral-200/80 dark:border-neutral-700/60 text-neutral-700 dark:text-neutral-300 text-[13px] leading-[18px] font-medium hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] transition-all shrink-0 cursor-pointer"
+          className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-neutral-100 dark:bg-neutral-800/70 border border-neutral-200/80 dark:border-neutral-700/60 text-neutral-600 dark:text-neutral-300 text-[11px] sm:text-[12px] font-medium hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] transition-all shrink-0 cursor-pointer active:scale-95"
         >
           {p.label}
         </button>
