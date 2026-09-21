@@ -18,6 +18,7 @@ const updateTodoSchema = z.object({
     .refine((val) => !val || !isNaN(Date.parse(val)), {
       message: "Invalid due date format",
     }),
+  priority: z.enum(["urgent", "high", "medium", "low"]).optional(),
 });
 
 export async function PATCH(
@@ -60,7 +61,7 @@ export async function PATCH(
       );
     }
 
-    const { completed, title, dueDate } = result.data;
+    const { completed, title, dueDate, priority } = result.data;
 
     const todo = await db.todo.update({
       where: { id },
@@ -70,6 +71,7 @@ export async function PATCH(
         ...(dueDate !== undefined && {
           dueDate: dueDate ? new Date(dueDate) : null,
         }),
+        ...(priority !== undefined && { priority }),
       },
     });
 

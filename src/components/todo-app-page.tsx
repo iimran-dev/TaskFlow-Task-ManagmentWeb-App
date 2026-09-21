@@ -16,7 +16,7 @@ import { TodoSearchBar } from "@/components/todo/todo-search-bar";
 import { KeyboardShortcutsModal } from "@/components/todo/keyboard-shortcuts-modal";
 import { UserProfileButton } from "@/components/auth/user-profile-button";
 import { useAuth } from "@/components/auth/auth-provider";
-import { Todo, FilterType, CategoryType } from "@/types/todo";
+import { Todo, PriorityType, PriorityFilterType } from "@/types/todo";
 
 interface TodoAppPageProps {
   onBack?: () => void;
@@ -29,9 +29,9 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState<Date | undefined>(undefined);
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [selectedPriority, setSelectedPriority] = useState<PriorityType>("urgent");
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
   const [loading, setLoading] = useState(true);
   const [addingTodo, setAddingTodo] = useState(false);
   const [openDatePopoverId, setOpenDatePopoverId] = useState<string | null>(null);
@@ -163,6 +163,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       title: titleText,
       completed: false,
       dueDate: newDate ? newDate.toISOString() : null,
+      priority: selectedPriority,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -174,10 +175,9 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       return next;
     });
 
-    // Reset inputs and clear filter to ensure immediate visibility
+    // Reset inputs and clear search to ensure immediate visibility
     setNewTitle("");
     setNewDate(undefined);
-    if (filter === "completed") setFilter("all");
     if (searchQuery) setSearchQuery("");
 
     // 2. Background API Sync (if database is available)
@@ -185,7 +185,11 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       const res = await fetch("/api/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: titleText, dueDate: newDate?.toISOString() }),
+        body: JSON.stringify({
+          title: titleText,
+          dueDate: newDate?.toISOString(),
+          priority: selectedPriority,
+        }),
       });
 
       if (res.ok) {
@@ -200,6 +204,24 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       console.warn("DB sync unavailable, task preserved locally:", error);
     } finally {
       setAddingTodo(false);
+    }
+  };
+
+  const updatePriority = async (id: string, priority: PriorityType) => {
+    const optimisticTodos = todos.map((t) =>
+      t.id === id ? { ...t, priority } : t
+    );
+    setTodos(optimisticTodos);
+    saveLocalStorageTodos(optimisticTodos);
+
+    try {
+      await fetch(`/api/todos/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priority }),
+      });
+    } catch {
+      // Local state is preserved
     }
   };
 
@@ -275,18 +297,15 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
     );
   };
 
-  // Filtered Todos by Status, Search Query, and Category
+  // Filtered Todos by Priority and Search Query
   const filteredTodos = todos.filter((todo) => {
-    if (filter === "active" && todo.completed) return false;
-    if (filter === "completed" && !todo.completed) return false;
+    if (priorityFilter !== "all" && (todo.priority || "medium") !== priorityFilter) {
+      return false;
+    }
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       if (!todo.title.toLowerCase().includes(q)) return false;
-    }
-
-    if (selectedCategory !== "all") {
-      if (todo.category !== selectedCategory) return false;
     }
 
     return true;
@@ -295,6 +314,10 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const totalTodos = todos.length;
   const completedCount = todos.filter((t) => t.completed).length;
   const activeCount = totalTodos - completedCount;
+  const urgentCount = todos.filter((t) => !t.completed && t.priority === "urgent").length;
+  const highCount = todos.filter((t) => !t.completed && t.priority === "high").length;
+  const mediumCount = todos.filter((t) => !t.completed && (t.priority === "medium" || !t.priority)).length;
+  const lowCount = todos.filter((t) => !t.completed && t.priority === "low").length;
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -470,6 +493,8 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
             setNewTitle={setNewTitle}
             newDate={newDate}
             setNewDate={setNewDate}
+            selectedPriority={selectedPriority}
+            setSelectedPriority={setSelectedPriority}
             onAddTodo={addTodo}
             addingTodo={addingTodo}
             titleInputRef={titleInputRef}
@@ -480,18 +505,19 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
           <TodoSearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
             searchInputRef={searchInputRef}
           />
 
-          {/* Stats & Filters */}
+          {/* Color-Themed Priority Stats & Selector */}
           <TodoStatsFilters
             totalTodos={totalTodos}
             completedCount={completedCount}
-            activeCount={activeCount}
-            filter={filter}
-            setFilter={setFilter}
+            urgentCount={urgentCount}
+            highCount={highCount}
+            mediumCount={mediumCount}
+            lowCount={lowCount}
+            priorityFilter={priorityFilter}
+            setPriorityFilter={setPriorityFilter}
             onOpenShortcuts={() => setIsShortcutsOpen(true)}
             isFocusMode={isFocusMode}
             onToggleFocusMode={() => setIsFocusMode((prev) => !prev)}
@@ -504,10 +530,11 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
           <TodoList
             todos={filteredTodos}
             loading={loading}
-            filter={filter}
+            priorityFilter={priorityFilter}
             onToggle={toggleTodo}
             onDelete={deleteTodo}
             onUpdateDueDate={updateDueDate}
+            onUpdatePriority={updatePriority}
             openDatePopoverId={openDatePopoverId}
             setOpenDatePopoverId={setOpenDatePopoverId}
           />
@@ -535,9 +562,14 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
 
       {/* Footer */}
       {!isFocusMode && (
-        <footer className="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black py-5 text-center">
+        <footer className="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black py-4 sm:py-5 text-center">
           <p className="text-[12px] leading-[16px] font-normal text-neutral-400 dark:text-neutral-500">
-            TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
+            <span className="hidden sm:inline">
+              TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
+            </span>
+            <span className="sm:hidden">
+              TaskFlow &bull; Tap task to toggle status
+            </span>
           </p>
         </footer>
       )}

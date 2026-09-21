@@ -13,12 +13,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TaskPresets } from "@/components/todo/task-presets";
+import { PriorityType, PRIORITY_CONFIGS } from "@/types/todo";
+import { cn } from "@/lib/utils";
 
 interface TodoAddFormProps {
   newTitle: string;
   setNewTitle: (value: string) => void;
   newDate: Date | undefined;
   setNewDate: (date: Date | undefined) => void;
+  selectedPriority: PriorityType;
+  setSelectedPriority: (p: PriorityType) => void;
   onAddTodo: () => void;
   addingTodo: boolean;
   titleInputRef?: React.RefObject<HTMLInputElement | null>;
@@ -30,6 +34,8 @@ export function TodoAddForm({
   setNewTitle,
   newDate,
   setNewDate,
+  selectedPriority,
+  setSelectedPriority,
   onAddTodo,
   addingTodo,
   titleInputRef,
@@ -39,8 +45,9 @@ export function TodoAddForm({
     if (e.key === "Enter") onAddTodo();
   };
 
-  const handleSelectPreset = (title: string) => {
+  const handleSelectPreset = (title: string, priority?: PriorityType) => {
     setNewTitle(title);
+    if (priority) setSelectedPriority(priority);
     if (titleInputRef?.current) {
       titleInputRef.current.focus();
     }
@@ -62,7 +69,7 @@ export function TodoAddForm({
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="h-11 sm:h-12 pl-3.5 sm:pl-4 pr-3 sm:pr-12 rounded-xl border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-black dark:text-white text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] font-normal focus-visible:ring-2 focus-visible:ring-[#3bda71] transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 placeholder:text-[14px] sm:placeholder:text-[16px] placeholder:font-normal"
+              className="h-11 sm:h-12 pl-3.5 sm:pl-4 pr-3 sm:pr-12 rounded-xl border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-black dark:text-white text-[16px] sm:text-[15px] leading-[22px] sm:leading-[24px] font-normal focus-visible:ring-2 focus-visible:ring-[#3bda71] transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 placeholder:text-[14px] sm:placeholder:text-[15px] placeholder:font-normal"
               disabled={addingTodo}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-[11px] leading-[14px] font-medium tracking-[0.04em] text-neutral-400 dark:text-neutral-500 bg-neutral-200/60 dark:bg-neutral-800 px-2 py-0.5 rounded-md pointer-events-none">
@@ -91,16 +98,17 @@ export function TodoAddForm({
         </div>
 
         <div className="flex items-center justify-between pt-0.5">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] bg-neutral-50 dark:bg-neutral-950 transition-colors cursor-pointer"
+                  className="h-7 sm:h-8 px-2 sm:px-3 rounded-lg text-[11px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-[#3bda71] hover:text-[#3bda71] dark:hover:text-[#3bda71] bg-neutral-50 dark:bg-neutral-950 transition-colors cursor-pointer shrink-0"
                 >
-                  <CalendarIcon className="w-3.5 h-3.5 mr-1.5 text-[#3bda71]" />
-                  {newDate ? format(newDate, "MMM d, yyyy") : "Set Due Date"}
+                  <CalendarIcon className="w-3.5 h-3.5 mr-1 sm:mr-1.5 text-[#3bda71]" />
+                  <span className="hidden sm:inline">{newDate ? format(newDate, "MMM d, yyyy") : "Set Due Date"}</span>
+                  <span className="sm:hidden">{newDate ? format(newDate, "MMM d") : "Due Date"}</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-3 rounded-xl border-neutral-200 dark:border-neutral-800 shadow-xl" align="start">
@@ -130,12 +138,38 @@ export function TodoAddForm({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 sm:h-8 text-[11px] sm:text-[12px] leading-[16px] text-neutral-400 hover:text-red-500 font-normal cursor-pointer px-1.5"
+                className="h-7 sm:h-8 text-[11px] sm:text-[12px] leading-[16px] text-neutral-400 hover:text-red-500 font-normal cursor-pointer px-1.5 shrink-0"
                 onClick={() => setNewDate(undefined)}
               >
-                Clear date
+                Clear
               </Button>
             )}
+
+            {/* Priority Selector Pills */}
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-neutral-100 dark:bg-neutral-950 p-0.5 rounded-lg border border-neutral-200 dark:border-neutral-800/80 shrink-0">
+              {(["urgent", "high", "medium", "low"] as PriorityType[]).map((p) => {
+                const conf = PRIORITY_CONFIGS[p];
+                const isSelected = selectedPriority === p;
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setSelectedPriority(p)}
+                    className={cn(
+                      "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-1 rounded-md text-[10.5px] sm:text-[12px] leading-[14px] font-semibold transition-all cursor-pointer",
+                      isSelected
+                        ? conf.badgeClass + " shadow-xs border"
+                        : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 border border-transparent"
+                    )}
+                    title={conf.label}
+                  >
+                    <span className={cn("w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shrink-0", conf.dotColor, isSelected && p === "urgent" && "animate-pulse")} />
+                    <span className="sm:hidden">{p === "urgent" ? "Urgent" : conf.shortLabel}</span>
+                    <span className="hidden sm:inline">{conf.shortLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal">

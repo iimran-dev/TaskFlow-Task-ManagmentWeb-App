@@ -16,6 +16,7 @@ const createTodoSchema = z.object({
     .refine((val) => !val || !isNaN(Date.parse(val)), {
       message: "Invalid due date format",
     }),
+  priority: z.enum(["urgent", "high", "medium", "low"]).optional(),
 });
 
 export async function GET() {
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, dueDate } = result.data;
+    const { title, dueDate, priority } = result.data;
 
     // Ensure the user exists in database to maintain relation integrity
     if (user.email) {
@@ -85,6 +86,7 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         title,
         dueDate: dueDate ? new Date(dueDate) : null,
+        priority: priority || "medium",
       },
     });
 
