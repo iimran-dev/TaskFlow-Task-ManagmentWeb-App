@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Trash2, ArrowLeft, Flame, Minimize2 } from "lucide-react";
+import { Trash2, ArrowLeft, Flame, Minimize2, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import { format } from "date-fns";
 
@@ -14,15 +14,18 @@ import { TodoProgress } from "@/components/todo/todo-progress";
 import { TodoList } from "@/components/todo/todo-list";
 import { TodoSearchBar } from "@/components/todo/todo-search-bar";
 import { KeyboardShortcutsModal } from "@/components/todo/keyboard-shortcuts-modal";
+import { UserProfileButton } from "@/components/auth/user-profile-button";
+import { useAuth } from "@/components/auth/auth-provider";
 import { Todo, FilterType, CategoryType } from "@/types/todo";
 
 interface TodoAppPageProps {
   onBack?: () => void;
 }
 
-const STORAGE_KEY = "taskflow_todos_local_v2";
-
 export function TodoAppPage({ onBack }: TodoAppPageProps) {
+  const { user, loading: authLoading, openAuthModal } = useAuth();
+  const storageKey = user ? `taskflow_todos_${user.id}` : "taskflow_todos_guest";
+
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState<Date | undefined>(undefined);
@@ -38,38 +41,51 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const titleInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // LocalStorage Helpers
-  const getLocalStorageTodos = (): Todo[] => {
+  // LocalStorage Helpers scoped per user
+  const getLocalStorageTodos = useCallback((): Todo[] => {
     if (typeof window === "undefined") return [];
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(storageKey);
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
     }
-  };
+  }, [storageKey]);
 
-  const saveLocalStorageTodos = (data: Todo[]) => {
-    if (typeof window === "undefined") return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) {
-      console.error("Failed to save to localStorage:", e);
-    }
-  };
+  const saveLocalStorageTodos = useCallback(
+    (data: Todo[]) => {
+      if (typeof window === "undefined") return;
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+      } catch (e) {
+        console.error("Failed to save to localStorage:", e);
+      }
+    },
+    [storageKey]
+  );
 
   const fetchTodos = useCallback(async () => {
+    if (authLoading) return;
+
+    if (!user) {
+      setTodos([]);
+      setLoading(false);
+      return;
+    }
+
     const localTodos = getLocalStorageTodos();
 
     try {
       const res = await fetch("/api/todos");
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setTodos(data);
           saveLocalStorageTodos(data);
           return;
         }
+      } else if (res.status === 401) {
+        setTodos([]);
       }
     } catch (error) {
       console.warn("API fetch failed, falling back to localStorage:", error);
@@ -77,9 +93,9 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
       setLoading(false);
     }
 
-    // Fallback to local storage
+    // Fallback to user-scoped local storage
     setTodos(localTodos);
-  }, []);
+  }, [user, authLoading, getLocalStorageTodos, saveLocalStorageTodos]);
 
   useEffect(() => {
     fetchTodos();
@@ -133,6 +149,11 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const addTodo = async () => {
     const titleText = newTitle.trim();
     if (!titleText) return;
+
+    if (!user) {
+      openAuthModal("signin");
+      return;
+    }
 
     setAddingTodo(true);
 
@@ -351,13 +372,14 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
                   variant="ghost"
                   size="sm"
                   onClick={onBack}
-                  className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-lg text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
+                  className="h-10 px-3 sm:px-3.5 rounded-xl text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span className="hidden xs:inline">Home</span>
                 </Button>
               )}
-              <div className="p-0.5 sm:p-1 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm">
+              <UserProfileButton />
+              <div className="h-10 w-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm flex items-center justify-center p-0 shrink-0">
                 <ThemeToggle />
               </div>
             </motion.div>
@@ -409,6 +431,36 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
                   <span>{completedCount} Done</span>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {/* Unauthenticated Cloud Workspace Banner */}
+          {!user && !authLoading && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#3bda71]/10 border border-[#3bda71]/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#3bda71] text-black flex items-center justify-center shrink-0 shadow-sm font-bold">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] font-semibold text-black dark:text-white">
+                    Private Cloud Workspace
+                  </p>
+                  <p className="text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] text-neutral-600 dark:text-neutral-400">
+                    Sign in to sync your tasks across your devices and keep them strictly private.
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                onClick={() => openAuthModal("signin")}
+                className="h-8 px-3.5 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black text-[12px] leading-[16px] font-semibold shadow-sm shrink-0 cursor-pointer self-start sm:self-auto"
+              >
+                Sign In / Register
+              </Button>
             </motion.div>
           )}
 

@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -24,9 +25,29 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getAuthUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     if (!id || typeof id !== "string") {
       return NextResponse.json({ error: "Invalid ID parameter" }, { status: 400 });
+    }
+
+    // Verify task exists and belongs to this user
+    const existing = await db.todo.findFirst({
+      where: { id, userId: user.id },
+    });
+
+    if (!existing) {
+      return NextResponse.json(
+        { error: "Todo not found or access denied" },
+        { status: 404 }
+      );
     }
 
     const body = await request.json();
@@ -46,7 +67,9 @@ export async function PATCH(
       data: {
         ...(completed !== undefined && { completed }),
         ...(title !== undefined && { title }),
-        ...(dueDate !== undefined && { dueDate: dueDate ? new Date(dueDate) : null }),
+        ...(dueDate !== undefined && {
+          dueDate: dueDate ? new Date(dueDate) : null,
+        }),
       },
     });
 
@@ -65,9 +88,29 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getAuthUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     if (!id || typeof id !== "string") {
       return NextResponse.json({ error: "Invalid ID parameter" }, { status: 400 });
+    }
+
+    // Verify task exists and belongs to this user
+    const existing = await db.todo.findFirst({
+      where: { id, userId: user.id },
+    });
+
+    if (!existing) {
+      return NextResponse.json(
+        { error: "Todo not found or access denied" },
+        { status: 404 }
+      );
     }
 
     await db.todo.delete({
@@ -83,4 +126,3 @@ export async function DELETE(
     );
   }
 }
-

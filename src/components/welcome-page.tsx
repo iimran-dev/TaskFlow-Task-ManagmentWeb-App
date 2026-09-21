@@ -8,14 +8,26 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { BentoFeatures } from "@/components/home/bento-features";
 import { FAQAccordion } from "@/components/home/faq-accordion";
 
+import { UserProfileButton } from "@/components/auth/user-profile-button";
+import { useAuth } from "@/components/auth/auth-provider";
+
 interface WelcomePageProps {
   onGetStarted: () => void;
 }
 
 export function WelcomePage({ onGetStarted }: WelcomePageProps) {
+  const { user, openAuthModal } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [showStickyBtn, setShowStickyBtn] = useState(false);
   const heroTriggerRef = useRef<HTMLDivElement>(null);
+
+  const handleStart = () => {
+    if (user) {
+      onGetStarted();
+    } else {
+      openAuthModal("signin");
+    }
+  };
 
   const steps = [
     {
@@ -74,10 +86,10 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
       </div>
 
-      {/* Top action bar: Sticky Try Now + Theme Toggle */}
+      {/* Top action bar: Sticky Workspace Button + Auth + Theme Toggle */}
       <div className="fixed top-6 right-6 z-50 flex items-center gap-2 sm:gap-2.5">
         <AnimatePresence>
-          {showStickyBtn && (
+          {showStickyBtn && user && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9, x: 10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -86,16 +98,18 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
             >
               <Button
                 onClick={onGetStarted}
-                className="h-10 px-4 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-[13px] leading-[18px] font-medium gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 border-0 cursor-pointer"
+                className="h-10 px-4 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-[13px] leading-[18px] font-semibold gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 border-0 cursor-pointer"
               >
-                <span>Try Now</span>
+                <span>Open Workspace</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="p-1 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm">
+        <UserProfileButton />
+
+        <div className="h-10 w-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm flex items-center justify-center p-0 shrink-0">
           <ThemeToggle />
         </div>
       </div>
@@ -114,7 +128,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 backdrop-blur-md">
             <img src="/logo.png" alt="TaskFlow Logo" className="w-4 h-4 rounded-full object-cover" />
             <span className="text-[11px] leading-[14px] font-medium tracking-[0.04em] text-neutral-800 dark:text-[#3bda71]">
-              taskflow &bull; Next-Gen Todo Experience
+              taskflow &bull; Next-Gen Cloud Todo Experience
             </span>
           </div>
 
@@ -132,11 +146,11 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
               </span>
             </h1>
             <p className="text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto font-normal pt-1">
-              A responsive task workspace designed for clarity and seamless productivity.
+              A responsive task workspace designed for clarity and seamless productivity across all your devices.
             </p>
           </div>
 
-          {/* Try Now Button directly below headline */}
+          {/* Try Now / Open Workspace Button */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -144,11 +158,11 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
             className="pt-4 sm:pt-6 flex flex-col items-center gap-3"
           >
             <Button
-              onClick={onGetStarted}
+              onClick={handleStart}
               size="lg"
               className="h-12 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-[15px] sm:text-[16px] leading-[22px] sm:leading-[24px] font-medium gap-2.5 group transition-all duration-200 hover:scale-105 active:scale-95 border-0 mb-5 cursor-pointer"
             >
-              Try Now
+              {user ? "Open Workspace" : "Get Started Free"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </Button>
 
@@ -157,7 +171,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
               className="flex items-center gap-2 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal"
             >
               <ShieldCheck className="w-4 h-4 text-[#3bda71]" />
-              <span>No signup required &bull; Persistent local database</span>
+              <span>Multi-device cloud sync &bull; Private user workspaces</span>
             </div>
           </motion.div>
         </motion.div>
