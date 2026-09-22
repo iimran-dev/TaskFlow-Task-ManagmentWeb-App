@@ -137,7 +137,7 @@ export function TodoAddForm({
 
             {/* Priority Selector Pills */}
             <div className="flex items-center gap-0.5 sm:gap-1 bg-neutral-100 dark:bg-neutral-950 p-0.5 rounded-lg border border-neutral-200 dark:border-neutral-800/80 shrink-0">
-              {(["urgent", "high", "medium", "low"] as PriorityType[]).map((p) => {
+              {(["high", "medium", "low"] as PriorityType[]).map((p) => {
                 const conf = PRIORITY_CONFIGS[p];
                 const isSelected = selectedPriority === p;
                 return (
@@ -146,16 +146,14 @@ export function TodoAddForm({
                     type="button"
                     onClick={() => setSelectedPriority(p)}
                     className={cn(
-                      "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-1 rounded-md text-[10.5px] sm:text-[12px] leading-[14px] font-semibold transition-all cursor-pointer",
+                      "px-2 sm:px-2.5 py-1 rounded-md text-[11px] sm:text-[12px] leading-[14px] font-semibold transition-all cursor-pointer text-center",
                       isSelected
                         ? conf.badgeClass + " shadow-xs border"
                         : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 border border-transparent"
                     )}
                     title={conf.label}
                   >
-                    <span className={cn("w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shrink-0")} />
-                    <span className="sm:hidden">{p === "urgent" ? "Urgent" : conf.shortLabel}</span>
-                    <span className="hidden sm:inline">{conf.shortLabel}</span>
+                    <span>{conf.shortLabel}</span>
                   </button>
                 );
               })}

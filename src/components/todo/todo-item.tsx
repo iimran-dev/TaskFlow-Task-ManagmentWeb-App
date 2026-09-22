@@ -35,33 +35,32 @@ export function TodoItem({
   setOpenDatePopover,
 }: TodoItemProps) {
   const { label, variant } = getDueDateLabel(todo.dueDate);
-  const priority = todo.priority || "medium";
+  const rawPriority = todo.priority;
+  const priority: PriorityType = (rawPriority as string === "urgent" ? "high" : rawPriority) || "medium";
   const priorityConfig = PRIORITY_CONFIGS[priority] || PRIORITY_CONFIGS.medium;
 
   const handleCyclePriority = () => {
     if (!onUpdatePriority) return;
     const priorityCycle: Record<PriorityType, PriorityType> = {
-      urgent: "high",
       high: "medium",
       medium: "low",
-      low: "urgent",
+      low: "high",
     };
-    onUpdatePriority(todo.id, priorityCycle[priority]);
+    onUpdatePriority(todo.id, priorityCycle[priority] || "medium");
   };
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 15, scale: 0.98 }}
+      initial={{ opacity: 0, y: 12, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, x: -60, scale: 0.95 }}
-      transition={{ duration: 0.3, ease: "easeOut" as const }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.22, ease: "easeOut" as const }}
       className={cn(
         "group relative bg-white dark:bg-neutral-900 rounded-xl border p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 transition-all duration-200 shadow-sm",
-        !todo.completed && priorityConfig.cardBorderClass,
         todo.completed
-          ? "border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-950/40 opacity-70 border-l-4 border-l-neutral-300 dark:border-l-neutral-700"
-          : "border-neutral-200 dark:border-neutral-800 hover:shadow-md"
+          ? "border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-950/40 opacity-70"
+          : "border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 hover:shadow-md"
       )}
     >
       {/* Checkbox */}
@@ -98,18 +97,12 @@ export function TodoItem({
             onClick={handleCyclePriority}
             disabled={!onUpdatePriority}
             className={cn(
-              "inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] leading-[14px] font-semibold px-2 py-0.5 rounded-md border transition-all cursor-pointer hover:scale-105 active:scale-95",
+              "inline-flex items-center text-[10px] sm:text-[11px] leading-[14px] font-semibold px-2 py-0.5 rounded-md border transition-all cursor-pointer hover:scale-105 active:scale-95",
               priorityConfig.badgeClass,
               todo.completed && "opacity-50"
             )}
-            title="Click to cycle priority (Immediate / High / Medium / Low)"
+            title="Click to cycle priority (High / Medium / Low)"
           >
-            <span
-              className={cn(
-                "w-1.5 h-1.5 rounded-full shrink-0",
-                priority === "urgent" && !todo.completed && "animate-pulse"
-              )}
-            />
             <span className="hidden sm:inline">{priorityConfig.label}</span>
             <span className="sm:hidden">{priorityConfig.shortLabel}</span>
           </button>

@@ -31,7 +31,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState<Date | undefined>(undefined);
-  const [selectedPriority, setSelectedPriority] = useState<PriorityType>("urgent");
+  const [selectedPriority, setSelectedPriority] = useState<PriorityType>("high");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -311,8 +311,9 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
 
   // Filtered Todos by Priority and Search Query
   const filteredTodos = todos.filter((todo) => {
-    if (priorityFilter !== "all" && (todo.priority || "medium") !== priorityFilter) {
-      return false;
+    if (priorityFilter !== "all") {
+      const p = (todo.priority as string === "urgent" ? "high" : todo.priority) || "medium";
+      if (p !== priorityFilter) return false;
     }
 
     if (searchQuery.trim()) {
@@ -326,8 +327,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
   const totalTodos = todos.length;
   const completedCount = todos.filter((t) => t.completed).length;
   const activeCount = totalTodos - completedCount;
-  const urgentCount = todos.filter((t) => !t.completed && t.priority === "urgent").length;
-  const highCount = todos.filter((t) => !t.completed && t.priority === "high").length;
+  const highCount = todos.filter((t) => !t.completed && (t.priority === "high" || (t.priority as string) === "urgent")).length;
   const mediumCount = todos.filter((t) => !t.completed && (t.priority === "medium" || !t.priority)).length;
   const lowCount = todos.filter((t) => !t.completed && t.priority === "low").length;
 
@@ -523,8 +523,6 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
           {/* Color-Themed Priority Stats & Selector */}
           <TodoStatsFilters
             totalTodos={totalTodos}
-            completedCount={completedCount}
-            urgentCount={urgentCount}
             highCount={highCount}
             mediumCount={mediumCount}
             lowCount={lowCount}

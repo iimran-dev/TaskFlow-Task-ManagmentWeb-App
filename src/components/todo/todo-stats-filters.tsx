@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 
 interface TodoStatsFiltersProps {
   totalTodos: number;
-  urgentCount: number;
   highCount: number;
   mediumCount: number;
   lowCount: number;
@@ -21,7 +20,6 @@ interface TodoStatsFiltersProps {
 
 export function TodoStatsFilters({
   totalTodos,
-  urgentCount,
   highCount,
   mediumCount,
   lowCount,
@@ -36,42 +34,40 @@ export function TodoStatsFilters({
     label: string;
     shortLabel: string;
     count: number;
-    dotColor?: string;
-    activeClass?: string;
+    pillBg: string;
+    textColor: string;
   }[] = [
     {
       type: "all",
       label: "All",
       shortLabel: "All",
       count: totalTodos,
-    },
-    {
-      type: "urgent",
-      label: "Immediate Action",
-      shortLabel: "Immediate",
-      count: urgentCount,
-      activeClass: "bg-red-500 text-white font-semibold",
+      pillBg: "bg-[#3bda71]",
+      textColor: "text-black",
     },
     {
       type: "high",
       label: "High",
       shortLabel: "High",
       count: highCount,
-      activeClass: "bg-amber-500 text-black font-semibold",
+      pillBg: "bg-amber-500",
+      textColor: "text-black",
     },
     {
       type: "medium",
       label: "Medium",
       shortLabel: "Medium",
       count: mediumCount,
-      activeClass: "bg-blue-500 text-white font-semibold",
+      pillBg: "bg-blue-500",
+      textColor: "text-white",
     },
     {
       type: "low",
       label: "Low",
       shortLabel: "Low",
       count: lowCount,
-      activeClass: "bg-emerald-500 text-black font-semibold",
+      pillBg: "bg-emerald-500",
+      textColor: "text-black",
     },
   ];
 
@@ -91,28 +87,35 @@ export function TodoStatsFilters({
             return (
               <button
                 key={option.type}
+                type="button"
                 onClick={() => setPriorityFilter(option.type)}
                 className={cn(
-                  "relative flex-1 py-1.5 sm:py-2 px-1.5 sm:px-2.5 text-center rounded-lg text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] transition-all duration-200 z-10 shrink-0 cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap min-h-[32px] sm:min-h-[36px]",
+                  "relative flex-1 py-1.5 sm:py-2 px-1.5 sm:px-2.5 text-center rounded-lg text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] transition-colors duration-200 shrink-0 cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap min-h-[32px] sm:min-h-[36px]",
                   isActive
-                    ? option.activeClass || "bg-[#3bda71] text-black font-semibold shadow-sm"
+                    ? cn(option.textColor, "font-semibold")
                     : "text-neutral-600 dark:text-neutral-400 font-medium hover:text-black dark:hover:text-white"
                 )}
+                title={`Filter: ${option.label}`}
               >
-                {option.dotColor && (
-                  <span
+                {isActive && (
+                  <motion.div
+                    layoutId="activeFilterPill"
                     className={cn(
-                      "w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shrink-0",
-                      option.dotColor,
-                      option.type === "urgent" && "animate-pulse"
+                      "absolute inset-0 rounded-lg shadow-sm z-0",
+                      option.pillBg
                     )}
+                    transition={{
+                      type: "spring",
+                      stiffness: 450,
+                      damping: 34,
+                    }}
                   />
                 )}
-                <span className="sm:hidden">{option.shortLabel}</span>
-                <span className="hidden sm:inline">{option.label}</span>
+                <span className="relative z-10 sm:hidden">{option.shortLabel}</span>
+                <span className="relative z-10 hidden sm:inline">{option.label}</span>
                 <span
                   className={cn(
-                    "text-[9.5px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full",
+                    "relative z-10 text-[9.5px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full transition-colors duration-200",
                     isActive
                       ? "bg-black/20 text-current font-bold"
                       : "bg-neutral-200/80 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
