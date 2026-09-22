@@ -1,14 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Layers, Keyboard, Maximize2, Minimize2, AlertCircle } from "lucide-react";
+import { Keyboard, Maximize2, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PriorityFilterType, PRIORITY_CONFIGS } from "@/types/todo";
+import { PriorityFilterType } from "@/types/todo";
 import { Button } from "@/components/ui/button";
 
 interface TodoStatsFiltersProps {
   totalTodos: number;
-  completedCount: number;
   urgentCount: number;
   highCount: number;
   mediumCount: number;
@@ -22,7 +21,6 @@ interface TodoStatsFiltersProps {
 
 export function TodoStatsFilters({
   totalTodos,
-  completedCount,
   urgentCount,
   highCount,
   mediumCount,
@@ -52,7 +50,6 @@ export function TodoStatsFilters({
       label: "Immediate Action",
       shortLabel: "Immediate",
       count: urgentCount,
-      dotColor: PRIORITY_CONFIGS.urgent.dotColor,
       activeClass: "bg-red-500 text-white font-semibold",
     },
     {
@@ -60,7 +57,6 @@ export function TodoStatsFilters({
       label: "High",
       shortLabel: "High",
       count: highCount,
-      dotColor: PRIORITY_CONFIGS.high.dotColor,
       activeClass: "bg-amber-500 text-black font-semibold",
     },
     {
@@ -68,7 +64,6 @@ export function TodoStatsFilters({
       label: "Medium",
       shortLabel: "Medium",
       count: mediumCount,
-      dotColor: PRIORITY_CONFIGS.medium.dotColor,
       activeClass: "bg-blue-500 text-white font-semibold",
     },
     {
@@ -76,7 +71,6 @@ export function TodoStatsFilters({
       label: "Low",
       shortLabel: "Low",
       count: lowCount,
-      dotColor: PRIORITY_CONFIGS.low.dotColor,
       activeClass: "bg-emerald-500 text-black font-semibold",
     },
   ];
@@ -88,75 +82,6 @@ export function TodoStatsFilters({
       transition={{ duration: 0.35 }}
       className="space-y-2 sm:space-y-3"
     >
-      {/* High Impact Stat Cards (Interactive on Mobile & Desktop) */}
-      {!isFocusMode && (
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-3">
-          {/* Total */}
-          <button
-            type="button"
-            onClick={() => setPriorityFilter("all")}
-            className={cn(
-              "bg-white dark:bg-neutral-900 border rounded-xl p-1.5 sm:p-3.5 text-left shadow-sm flex items-center gap-1.5 sm:gap-3 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]",
-              priorityFilter === "all"
-                ? "border-neutral-400 dark:border-neutral-600 ring-1 ring-neutral-400/30"
-                : "border-neutral-200 dark:border-neutral-800 hover:border-neutral-400/50"
-            )}
-            title="Filter: All tasks"
-          >
-            <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-800 dark:text-neutral-200 shrink-0">
-              <Layers className="w-3 sm:w-4 h-3 sm:h-4 stroke-[2]" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[16px] sm:text-[24px] leading-tight font-bold text-black dark:text-white tracking-[-0.03em]">
-                {totalTodos}
-              </div>
-              <div className="text-[9px] sm:text-[11px] leading-tight font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.03em] truncate">
-                Total
-              </div>
-            </div>
-          </button>
-
-          {/* Immediate Action (Red Priority Card) */}
-          <button
-            type="button"
-            onClick={() => setPriorityFilter(priorityFilter === "urgent" ? "all" : "urgent")}
-            className={cn(
-              "bg-white dark:bg-neutral-900 border rounded-xl p-1.5 sm:p-3.5 text-left shadow-sm flex items-center gap-1.5 sm:gap-3 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]",
-              priorityFilter === "urgent"
-                ? "border-red-500 bg-red-500/10 dark:bg-red-500/15 ring-1 ring-red-500/50"
-                : "border-neutral-200 dark:border-neutral-800 hover:border-red-500/50"
-            )}
-            title="Click to view Immediate Action tasks"
-          >
-            <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg bg-red-500/15 flex items-center justify-center text-red-500 shrink-0">
-              <AlertCircle className="w-3 sm:w-4 h-3 sm:h-4 stroke-[2.2] animate-pulse" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[16px] sm:text-[24px] leading-tight font-bold text-red-600 dark:text-red-400 tracking-[-0.03em]">
-                {urgentCount}
-              </div>
-              <div className="text-[9px] sm:text-[11px] leading-tight font-semibold text-red-500/90 uppercase tracking-[0.03em] truncate">
-                Immediate
-              </div>
-            </div>
-          </button>
-
-          {/* Completed */}
-          <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-1.5 sm:p-3.5 text-left shadow-sm flex items-center gap-1.5 sm:gap-3">
-            <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg bg-[#3bda71]/15 flex items-center justify-center text-[#3bda71] shrink-0">
-              <CheckCircle2 className="w-3 sm:w-4 h-3 sm:h-4 stroke-[2]" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[16px] sm:text-[24px] leading-tight font-bold text-[#3bda71] tracking-[-0.03em]">
-                {completedCount}
-              </div>
-              <div className="text-[9px] sm:text-[11px] leading-tight font-semibold text-[#3bda71]/80 uppercase tracking-[0.03em] truncate">
-                Done
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Color-Themed Priority Bar */}
       <div className="w-full flex items-center gap-1.5 sm:gap-2">

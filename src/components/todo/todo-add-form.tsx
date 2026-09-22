@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Plus, CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -12,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TaskPresets } from "@/components/todo/task-presets";
 import { PriorityType, PRIORITY_CONFIGS } from "@/types/todo";
 import { cn } from "@/lib/utils";
 
@@ -43,14 +41,6 @@ export function TodoAddForm({
 }: TodoAddFormProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") onAddTodo();
-  };
-
-  const handleSelectPreset = (title: string, priority?: PriorityType) => {
-    setNewTitle(title);
-    if (priority) setSelectedPriority(priority);
-    if (titleInputRef?.current) {
-      titleInputRef.current.focus();
-    }
   };
 
   return (
@@ -163,7 +153,7 @@ export function TodoAddForm({
                     )}
                     title={conf.label}
                   >
-                    <span className={cn("w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shrink-0", conf.dotColor, isSelected && p === "urgent" && "animate-pulse")} />
+                    <span className={cn("w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full shrink-0")} />
                     <span className="sm:hidden">{p === "urgent" ? "Urgent" : conf.shortLabel}</span>
                     <span className="hidden sm:inline">{conf.shortLabel}</span>
                   </button>
@@ -177,9 +167,6 @@ export function TodoAddForm({
             <span>Optimistic Sync</span>
           </div>
         </div>
-
-        {/* Task Presets Chips (Hidden in Focus Mode for maximum conciseness) */}
-        {!isFocusMode && <TaskPresets onSelectPreset={handleSelectPreset} />}
       </div>
     </motion.div>
   );
