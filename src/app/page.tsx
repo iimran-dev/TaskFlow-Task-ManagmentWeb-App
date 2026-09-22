@@ -46,14 +46,18 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    // Listen to browser back/forward buttons
-    const handlePopState = () => {
+    // Listen to browser navigation and hash changes
+    const handleHashOrPopState = () => {
       const isApp = window.location.hash === "#app";
       setShowWelcome(!isApp);
     };
 
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    window.addEventListener("popstate", handleHashOrPopState);
+    window.addEventListener("hashchange", handleHashOrPopState);
+    return () => {
+      window.removeEventListener("popstate", handleHashOrPopState);
+      window.removeEventListener("hashchange", handleHashOrPopState);
+    };
   }, []);
 
   useEffect(() => {

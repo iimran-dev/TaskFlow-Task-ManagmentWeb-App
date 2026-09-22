@@ -68,11 +68,6 @@ export function AuthModal({
 
     try {
       if (mode === "signup") {
-        const redirectUrl =
-          typeof window !== "undefined"
-            ? `${window.location.origin}/auth/callback?next=/#app`
-            : undefined;
-
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
@@ -80,7 +75,6 @@ export function AuthModal({
             data: {
               name: name.trim() || cleanEmail.split("@")[0],
             },
-            emailRedirectTo: redirectUrl,
           },
         });
 
@@ -90,20 +84,29 @@ export function AuthModal({
           return;
         }
 
-        // If user is immediately active (email confirmation off)
-        if (data.session) {
-          await fetch("/api/auth/sync", { method: "POST" }).catch(() => {});
-          setSuccessMessage("Account created successfully!");
-          setTimeout(() => {
-            onSuccess?.();
-            onClose();
-          }, 800);
-        } else {
-          // Email confirmation is required
-          setSuccessMessage(
-            "Account registered! Please check your email to confirm your account."
-          );
+        // Sync with database to guarantee record in public."User"
+        if (data?.user) {
+          await fetch("/api/auth/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: data.user.id,
+              email: cleanEmail,
+              name: name.trim() || cleanEmail.split("@")[0],
+            }),
+          }).catch(() => {});
         }
+
+        // If Supabase auto-created a session because email confirmation is disabled,
+        // sign out so user can explicitly sign in with the same credentials
+        await supabase.auth.signOut().catch(() => {});
+
+        // Switch to signin mode, keep email prefilled, clear password, show message
+        setMode("signin");
+        setPassword("");
+        setSuccessMessage(
+          "Account created successfully, now Sign in with same email and password"
+        );
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: cleanEmail,
@@ -127,6 +130,9 @@ export function AuthModal({
 
         setSuccessMessage("Welcome back!");
         setTimeout(() => {
+          if (typeof window !== "undefined") {
+            window.location.hash = "#app";
+          }
           onSuccess?.();
           onClose();
         }, 600);
