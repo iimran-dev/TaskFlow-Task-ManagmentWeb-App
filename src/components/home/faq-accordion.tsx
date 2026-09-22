@@ -9,25 +9,17 @@ export function FAQAccordion() {
 
   const faqs = [
     {
-      q: "Do I need to create an account or sign in?",
-      a: "No! taskflow operates instantly out of the box with zero sign-up friction. Your tasks are stored locally in your browser's persistent database.",
-    },
-    {
       q: "Is my task data safe and private?",
-      a: "100% private. Your data never leaves your device and is not uploaded to third-party servers. All task records remain strictly under your control.",
-    },
-    {
-      q: "What happens if I refresh or close my browser tab?",
-      a: "Your tasks are saved instantly using persistent browser storage (LocalStorage). When you return to the page, all your tasks, tags, and progress will be right where you left them.",
-    },
-    {
-      q: "What keyboard shortcuts are available?",
-      a: "You can press ⌘N (or Ctrl+N) to quickly focus the task input, ⌘K to open search, and Space or Enter to toggle completion when navigating items.",
+      a: "100% private. Your data is never shared with third-party servers. All task records remain strictly under your control.",
     },
     {
       q: "Is taskflow free to use?",
       a: "Yes! taskflow is completely free and open-access for personal and professional productivity.",
     },
+    {
+      q: "Can I access my tasks across multiple devices?",
+      a: "Yes! Once you sign in, all your tasks, priorities, and deadlines sync instantly in real time across your desktop, laptop, and mobile browsers.",
+    }
   ];
 
   return (
