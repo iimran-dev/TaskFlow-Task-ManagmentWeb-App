@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck, Mail } from "lucide-react";
+import { GitHub, LinkedIn } from "@/components/icons";
+
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BentoFeatures } from "@/components/home/bento-features";
@@ -10,6 +12,12 @@ import { FAQAccordion } from "@/components/home/faq-accordion";
 
 import { UserProfileButton } from "@/components/auth/user-profile-button";
 import { useAuth } from "@/components/auth/auth-provider";
+
+export const address = {
+  email: "info.imran.ma@gmail.com",
+  github: "https://github.com/iimran-dev",
+  linkedin: "https://www.linkedin.com/in/imran-m-a-35a89128a/"
+};
 
 interface WelcomePageProps {
   onGetStarted: () => void;
@@ -298,9 +306,39 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
             </div>
 
             {/* Copyright Subtext */}
-            <p className="text-[11px] leading-[14px] text-neutral-500 font-normal tracking-[0.04em] uppercase pt-2">
-              &copy; {new Date().getFullYear()} taskflow
+            <p className="text-[11px] leading-[14px] text-neutral-500 font-normal tracking-[0.04em] pt-2">
+              &copy; {new Date().getFullYear()} taskflow, made by <span className="text-[#3bda71]">Imran</span>
             </p>
+            <div className="flex items-center justify-center gap-3 pt-3">
+              <a
+                href={address.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+                title="GitHub"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 shadow-xs cursor-pointer"
+              >
+                <GitHub className="w-4 h-4" />
+              </a>
+              <a
+                href={address.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+                title="LinkedIn"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 shadow-xs cursor-pointer"
+              >
+                <LinkedIn className="w-4 h-4" />
+              </a>
+              <a
+                href={`mailto:${address.email}`}
+                aria-label="Send Email"
+                title="Email"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 shadow-xs cursor-pointer"
+              >
+                <Mail className="w-4 h-4" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>

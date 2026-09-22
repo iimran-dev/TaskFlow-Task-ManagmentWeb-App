@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Trash2, ArrowLeft, Flame, Minimize2, Sparkles } from "lucide-react";
+import { Trash2, ArrowLeft, Flame, Minimize2, Sparkles, Mail } from "lucide-react";
+import { GitHub, LinkedIn } from "@/components/icons";
+import { address } from "@/components/welcome-page";
 import confetti from "canvas-confetti";
 import { format } from "date-fns";
 
@@ -572,15 +574,47 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
 
       {/* Footer */}
       {!isFocusMode && (
-        <footer className="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black py-4 sm:py-5 text-center">
-          <p className="text-[12px] leading-[16px] font-normal text-neutral-400 dark:text-neutral-500">
-            <span className="hidden sm:inline">
-              TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
-            </span>
-            <span className="sm:hidden">
-              TaskFlow &bull; Tap task to toggle status
-            </span>
-          </p>
+        <footer className="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black py-4 sm:py-5">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <p className="text-[12px] leading-[16px] font-normal text-neutral-400 dark:text-neutral-500">
+              <span className="hidden sm:inline">
+                TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
+              </span>
+              <span className="sm:hidden">
+                TaskFlow &bull; Tap task to toggle status
+              </span>
+            </p>
+            <div className="flex items-center gap-2">
+              <a
+                href={address.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+                title="GitHub"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+              >
+                <GitHub className="w-3.5 h-3.5" />
+              </a>
+              <a
+                href={address.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+                title="LinkedIn"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+              >
+                <LinkedIn className="w-3.5 h-3.5" />
+              </a>
+              <a
+                href={`mailto:${address.email}`}
+                aria-label="Send Email"
+                title="Email"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+              >
+                <Mail className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
         </footer>
       )}
     </div>
