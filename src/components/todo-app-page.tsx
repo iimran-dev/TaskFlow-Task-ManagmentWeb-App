@@ -23,7 +23,7 @@ interface TodoAppPageProps {
 }
 
 export function TodoAppPage({ onBack }: TodoAppPageProps) {
-  const { user, loading: authLoading, openAuthModal } = useAuth();
+  const { user, loading: authLoading, openAuthModal, signOut } = useAuth();
   const storageKey = user ? `taskflow_todos_${user.id}` : "taskflow_todos_guest";
 
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -86,6 +86,10 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
         }
       } else if (res.status === 401) {
         setTodos([]);
+        saveLocalStorageTodos([]);
+        await signOut();
+        openAuthModal("signin");
+        return;
       }
     } catch (error) {
       console.warn("API fetch failed, falling back to localStorage:", error);
@@ -95,7 +99,7 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
 
     // Fallback to user-scoped local storage
     setTodos(localTodos);
-  }, [user, authLoading, getLocalStorageTodos, saveLocalStorageTodos]);
+  }, [user, authLoading, getLocalStorageTodos, saveLocalStorageTodos, signOut, openAuthModal]);
 
   useEffect(() => {
     fetchTodos();
@@ -199,6 +203,12 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
           saveLocalStorageTodos(updated);
           return updated;
         });
+      } else if (res.status === 401) {
+        setTodos([]);
+        saveLocalStorageTodos([]);
+        await signOut();
+        openAuthModal("signin");
+        return;
       }
     } catch (error) {
       console.warn("DB sync unavailable, task preserved locally:", error);

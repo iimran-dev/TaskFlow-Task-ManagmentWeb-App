@@ -41,15 +41,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function initializeAuth() {
       try {
         const {
-          data: { session: initialSession },
-        } = await supabase.auth.getSession();
+          data: { user: verifiedUser },
+          error: userError,
+        } = await supabase.auth.getUser();
 
-        if (mounted) {
-          setSession(initialSession);
-          setUser(initialSession?.user ?? null);
+        if (userError || !verifiedUser) {
+          // Token is invalid, expired, or user was deleted
+          await supabase.auth.signOut().catch(() => {});
+          if (mounted) {
+            setSession(null);
+            setUser(null);
+          }
+        } else {
+          const {
+            data: { session: currentSession },
+          } = await supabase.auth.getSession();
+
+          if (mounted) {
+            setSession(currentSession);
+            setUser(verifiedUser);
+          }
+
+          // Trigger sync and verify user exists in database
+          fetch("/api/auth/sync", { method: "POST" })
+            .then(async (res) => {
+              if (res.status === 401 && mounted) {
+                // User has been deleted from database
+                await supabase.auth.signOut().catch(() => {});
+                setSession(null);
+                setUser(null);
+              }
+            })
+            .catch(() => {});
         }
       } catch (err) {
         console.error("Error initializing auth:", err);
+        if (mounted) {
+          setUser(null);
+          setSession(null);
+        }
       } finally {
         if (mounted) {
           setLoading(false);
@@ -61,10 +91,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-      setUser(newSession?.user ?? null);
-      setLoading(false);
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (event === "SIGNED_OUT" || !newSession?.user) {
+        if (mounted) {
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      if (mounted) {
+        setSession(newSession);
+        setUser(newSession.user);
+        setLoading(false);
+      }
+
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+        fetch("/api/auth/sync", { method: "POST" })
+          .then(async (res) => {
+            if (res.status === 401 && mounted) {
+              await supabase.auth.signOut().catch(() => {});
+              setSession(null);
+              setUser(null);
+            }
+          })
+          .catch(() => {});
+      }
     });
 
     return () => {

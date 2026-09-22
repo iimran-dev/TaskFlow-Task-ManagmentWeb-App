@@ -8,7 +8,18 @@ import { TodoAppPage } from "@/components/todo-app-page";
 export default function Page() {
   const [showWelcome, setShowWelcome] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
-      return window.location.hash !== "#app";
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (
+        hash === "#app" ||
+        hash.includes("access_token") ||
+        hash.includes("type=signup") ||
+        hash.includes("type=recovery") ||
+        search.includes("workspace=true")
+      ) {
+        return false;
+      }
+      return true;
     }
     return true;
   });
@@ -22,6 +33,22 @@ export default function Page() {
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    // If returning from email confirmation with tokens in hash
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash.includes("access_token") || hash.includes("type=signup")) {
+        const timeout = setTimeout(() => {
+          setShowWelcome(false);
+          if (window.location.hash !== "#app") {
+            window.history.replaceState({ view: "app" }, "", "#app");
+          }
+        }, 300);
+        return () => clearTimeout(timeout);
+      }
+    }
   }, []);
 
   const handleGetStarted = () => {

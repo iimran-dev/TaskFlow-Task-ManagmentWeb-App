@@ -68,6 +68,11 @@ export function AuthModal({
 
     try {
       if (mode === "signup") {
+        const redirectUrl =
+          typeof window !== "undefined"
+            ? `${window.location.origin}/auth/callback?next=/#app`
+            : undefined;
+
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
@@ -75,6 +80,7 @@ export function AuthModal({
             data: {
               name: name.trim() || cleanEmail.split("@")[0],
             },
+            emailRedirectTo: redirectUrl,
           },
         });
 
@@ -86,6 +92,7 @@ export function AuthModal({
 
         // If user is immediately active (email confirmation off)
         if (data.session) {
+          await fetch("/api/auth/sync", { method: "POST" }).catch(() => {});
           setSuccessMessage("Account created successfully!");
           setTimeout(() => {
             onSuccess?.();
@@ -105,6 +112,15 @@ export function AuthModal({
 
         if (signInError) {
           setError(signInError.message);
+          setLoading(false);
+          return;
+        }
+
+        // Verify with database that user still has access
+        const syncRes = await fetch("/api/auth/sync", { method: "POST" });
+        if (!syncRes.ok) {
+          await supabase.auth.signOut().catch(() => {});
+          setError("Account not found or access has been revoked");
           setLoading(false);
           return;
         }

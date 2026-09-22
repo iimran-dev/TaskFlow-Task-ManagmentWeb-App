@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+import { db } from "@/lib/db";
+
 export async function createClient() {
   const cookieStore = await cookies();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -37,5 +39,15 @@ export async function getAuthUser() {
   if (error || !user) {
     return null;
   }
+
+  // Ensure user still exists in the application database
+  const dbUser = await db.user.findUnique({
+    where: { id: user.id },
+  });
+
+  if (!dbUser) {
+    return null;
+  }
+
   return user;
 }

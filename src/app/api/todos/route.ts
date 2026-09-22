@@ -65,22 +65,6 @@ export async function POST(request: NextRequest) {
 
     const { title, dueDate, priority } = result.data;
 
-    // Ensure the user exists in database to maintain relation integrity
-    if (user.email) {
-      await db.user.upsert({
-        where: { id: user.id },
-        update: { email: user.email },
-        create: {
-          id: user.id,
-          email: user.email,
-          name:
-            user.user_metadata?.name ||
-            user.user_metadata?.full_name ||
-            user.email.split("@")[0],
-        },
-      });
-    }
-
     const todo = await db.todo.create({
       data: {
         userId: user.id,
