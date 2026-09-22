@@ -15,7 +15,9 @@ export default function Page() {
         hash.includes("access_token") ||
         hash.includes("type=signup") ||
         hash.includes("type=recovery") ||
-        search.includes("workspace=true")
+        search.includes("workspace=true") ||
+        search.includes("code=") ||
+        search.includes("token_hash=")
       ) {
         return false;
       }
@@ -23,6 +25,25 @@ export default function Page() {
     }
     return true;
   });
+
+  useEffect(() => {
+    // If returning with code or token_hash in query params
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const code = searchParams.get("code");
+      const token_hash = searchParams.get("token_hash");
+      const type = searchParams.get("type");
+
+      if (code || token_hash) {
+        const query = new URLSearchParams();
+        if (code) query.set("code", code);
+        if (token_hash) query.set("token_hash", token_hash);
+        if (type) query.set("type", type);
+        query.set("next", "/#app");
+        window.location.href = `/auth/callback?${query.toString()}`;
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Listen to browser back/forward buttons

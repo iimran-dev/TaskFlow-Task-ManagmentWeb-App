@@ -1,7 +1,23 @@
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
+  const { searchParams, pathname } = request.nextUrl;
+  const code = searchParams.get("code");
+  const token_hash = searchParams.get("token_hash");
+
+  // If Supabase redirected to root / with code or token_hash, route to callback
+  if ((code || token_hash) && pathname === "/") {
+    const callbackUrl = new URL("/auth/callback", request.url);
+    searchParams.forEach((value, key) => {
+      callbackUrl.searchParams.set(key, value);
+    });
+    if (!callbackUrl.searchParams.has("next")) {
+      callbackUrl.searchParams.set("next", "/#app");
+    }
+    return NextResponse.redirect(callbackUrl);
+  }
+
   return await updateSession(request);
 }
 
