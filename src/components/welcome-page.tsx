@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ShieldCheck, Mail } from "lucide-react";
 import { GitHub, LinkedIn } from "@/components/icons";
@@ -26,8 +26,6 @@ interface WelcomePageProps {
 export function WelcomePage({ onGetStarted }: WelcomePageProps) {
   const { user, openAuthModal } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
-  const [showStickyBtn, setShowStickyBtn] = useState(false);
-  const heroTriggerRef = useRef<HTMLDivElement>(null);
 
   const handleStart = () => {
     if (user) {
@@ -67,18 +65,6 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
     }, 4500);
     return () => clearInterval(timer);
   }, [steps.length]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!heroTriggerRef.current) return;
-      const rect = heroTriggerRef.current.getBoundingClientRect();
-      setShowStickyBtn(rect.bottom < 0);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <motion.div
@@ -195,10 +181,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </Button>
 
-            <div
-              ref={heroTriggerRef}
-              className="flex items-center gap-2 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal"
-            >
+            <div className="flex items-center gap-2 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal">
               <ShieldCheck className="w-4 h-4 text-[#3bda71]" />
               <span>Multi-device cloud sync &bull; Private user workspaces</span>
             </div>

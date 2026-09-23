@@ -81,7 +81,7 @@ export function BentoFeatures() {
           </div>
         </motion.div>
 
-        {/* Card 2: Medium - Offline First (md:col-span-5) */}
+        {/* Card 2: Access across any device */}
         <motion.div
           variants={itemVariants}
           className="md:col-span-5 group relative rounded-3xl bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800 p-6 sm:p-8 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
@@ -93,21 +93,21 @@ export function BentoFeatures() {
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[11px] leading-[14px] font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                <span>100% Offline</span>
+                <span>Cloud sync</span>
               </div>
             </div>
             <h3 className="text-[20px] leading-[28px] font-bold text-black dark:text-white tracking-[-0.02em]">
-              Instant Local Storage
+              Access across any device
             </h3>
             <p className="text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] text-neutral-500 dark:text-neutral-400 font-normal">
-              Your tasks are stored locally with zero network delay. Reload anytime without losing a single item.
+              Access your tasks anytime, anywhere on your phone, tablet, or desktop. Seamless sync keeps everything updated in real-time.
             </p>
           </div>
 
           <div className="mt-6 p-3 rounded-2xl bg-[#3bda71]/10 border border-[#3bda71]/20 flex items-center justify-between text-[13px] leading-[18px] font-medium text-black dark:text-white">
             <span className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#3bda71]" />
-              Persistent Browser DB
+              Persistent DB
             </span>
             <span className="text-[#3bda71] font-mono font-medium">0ms Sync</span>
           </div>
