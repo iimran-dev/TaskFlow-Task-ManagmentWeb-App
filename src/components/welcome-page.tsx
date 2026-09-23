@@ -43,7 +43,6 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
       title: "Hyper focus mode",
       desc: "Start by organizing your daily targets with smart priorities",
       image: "/papercut2.svg",
-      fallback: "https://images.unsplash.com/",
       tag: "Focus",
     },
     {
@@ -55,7 +54,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
     },
     {
       num: "03",
-      title: "Minimalist designer ui",
+      title: "Minimalist designer UI",
       desc: "Fluid interactive transitions and experience",
       image: "/papercut1.svg",
       tag: "Design",
@@ -94,36 +93,65 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
       </div>
 
-      {/* Top action bar: Sticky Workspace Button + Auth + Theme Toggle */}
-      <div className="fixed top-6 right-6 z-50 flex items-center gap-2 sm:gap-2.5">
-        <AnimatePresence>
-          {showStickyBtn && user && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: 10 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: 10 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-            >
-              <Button
-                onClick={onGetStarted}
-                className="h-10 px-4 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black shadow-md text-[13px] leading-[18px] font-semibold gap-1.5 transition-all duration-200 hover:scale-105 active:scale-95 border-0 cursor-pointer"
-              >
-                <span>Open Workspace</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Top Fixed Navbar */}
+      <header className="fixed top-0 inset-x-0 z-50 bg-slate-50/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          {/* Logo & Brand */}
+          <a
+            href="#"
+            className="flex items-center gap-2.5 sm:gap-3 group cursor-pointer"
+          >
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-xs bg-[#3bda71] shrink-0 transition-transform duration-200 group-hover:scale-105">
+              <img src="/mobile-logo.svg" alt="TaskFlow Logo" className="w-full h-full object-cover" />
+            </div>
+            <span className="text-[17px] sm:text-[19px] font-bold tracking-[-0.02em] text-black dark:text-white">
+              taskflow<span className="text-[#3bda71]">.</span>
+            </span>
+          </a>
 
-        <UserProfileButton />
+          {/* Right Action Items: Auth / Workspace + Theme Toggle */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {!user ? (
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openAuthModal("signin")}
+                  className="h-9 sm:h-10 px-3 sm:px-4 rounded-xl text-[13px] sm:text-[14px] font-medium text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-neutral-800/60 transition-colors cursor-pointer"
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => openAuthModal("signup")}
+                  className="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black font-semibold text-[13px] leading-[18px] shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 border-0 cursor-pointer"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                <Button
+                  onClick={onGetStarted}
+                  size="sm"
+                  className="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-[#3bda71] hover:bg-[#34c666] text-black font-semibold text-[13px] leading-[18px] shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 border-0 cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Workspace</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Button>
+                <UserProfileButton />
+              </div>
+            )}
 
-        <div className="h-10 w-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm flex items-center justify-center p-0 shrink-0">
-          <ThemeToggle />
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs flex items-center justify-center p-0 shrink-0">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 sm:py-14 max-w-5xl mx-auto w-full text-center space-y-10 sm:space-y-16">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-24 sm:pt-28 pb-10 sm:pb-14 max-w-5xl mx-auto w-full text-center space-y-10 sm:space-y-16">
 
         {/* Badge & Hero Section */}
         <motion.div
@@ -132,13 +160,6 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="space-y-6 sm:space-y-8 max-w-4xl mx-auto"
         >
-          {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 backdrop-blur-md">
-            <img src="/logo.png" alt="TaskFlow Logo" className="w-4 h-4 rounded-full object-cover" />
-            <span className="text-[11px] leading-[14px] font-medium tracking-[0.04em] text-neutral-800 dark:text-[#3bda71]">
-              taskflow &bull; Next-Gen Cloud Todo Experience
-            </span>
-          </div>
 
           {/* Main Headline - Viewport display text */}
           <div className="space-y-4 sm:space-y-5">
@@ -292,6 +313,7 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,218,113,0.14),transparent_70%)] pointer-events-none" />
 
           <div className="relative z-10 space-y-3 sm:space-y-4">
+
             {/* Giant Brand Typography */}
             <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-none select-none">
               <span className="text-[#3bda71]">task</span>

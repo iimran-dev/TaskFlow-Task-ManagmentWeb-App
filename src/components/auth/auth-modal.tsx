@@ -169,6 +169,9 @@ export function AuthModal({
             {/* Header */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm bg-[#3bda71] shrink-0">
+                  <img src="/mobile-logo.svg" alt="TaskFlow Logo" className="w-full h-full object-cover" />
+                </div>
                 <div>
                   <h2 className="text-[20px] leading-[26px] font-bold text-black dark:text-white tracking-[-0.02em]">
                     {mode === "signin" ? "Sign in to TaskFlow" : "Create an Account"}

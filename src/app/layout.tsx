@@ -18,16 +18,22 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://taskflow.imran.dev"),
   title: "TaskFlow - Modern To-Do App",
   description: "A beautiful, modern to-do application to help you stay organized and get things done.",
   keywords: ["TaskFlow", "Todo", "Productivity", "Next.js", "TypeScript"],
   icons: {
     icon: [
-      { url: "/favicon.png", type: "image/png" },
-      { url: "/logo.png", type: "image/png" }
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/mobile-logo.svg", type: "image/svg+xml" },
     ],
-    shortcut: "/favicon.png",
-    apple: "/logo.png",
+    shortcut: "/favicon.svg",
+    apple: "/mobile-logo.svg",
+  },
+  openGraph: {
+    title: "TaskFlow - Modern To-Do App",
+    description: "A beautiful, modern to-do application to help you stay organized and get things done.",
+    images: [{ url: "/full-logo.svg" }],
   },
 };
 

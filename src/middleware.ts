@@ -27,7 +27,7 @@ export const config = {
      * Match all request paths except for the ones starting with:
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, logo.png, etc. (static assets)
+     * - favicon.svg, full-logo.svg, mobile-logo.svg, etc. (static assets)
      */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],

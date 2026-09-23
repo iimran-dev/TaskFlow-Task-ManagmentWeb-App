@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Plus, CalendarIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, CalendarIcon, Minimize2 } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ interface TodoAddFormProps {
   addingTodo: boolean;
   titleInputRef?: React.RefObject<HTMLInputElement | null>;
   isFocusMode?: boolean;
+  onExitFocus?: () => void;
 }
 
 export function TodoAddForm({
@@ -38,6 +39,7 @@ export function TodoAddForm({
   addingTodo,
   titleInputRef,
   isFocusMode,
+  onExitFocus,
 }: TodoAddFormProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") onAddTodo();
@@ -50,7 +52,7 @@ export function TodoAddForm({
       transition={{ duration: 0.4, delay: 0.1 }}
       className="relative group space-y-2.5"
     >
-      <div className={`bg-white dark:bg-neutral-900 rounded-xl sm:rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm transition-all group-hover:border-[#3bda71] ${isFocusMode ? "p-3 sm:p-4 space-y-2 sm:space-y-2.5" : "p-3 sm:p-5 space-y-2.5 sm:space-y-3.5"}`}>
+      <div className="bg-white dark:bg-neutral-900 rounded-xl sm:rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm group-hover:border-[#3bda71] p-3 sm:p-4.5 space-y-2.5 sm:space-y-3 transition-colors">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative flex-1">
             <Input
@@ -87,8 +89,8 @@ export function TodoAddForm({
           </Button>
         </div>
 
-        <div className="flex items-center justify-between pt-0.5">
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+        <div className="flex items-center justify-between gap-2 pt-0.5 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-wrap sm:flex-nowrap">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -160,7 +162,31 @@ export function TodoAddForm({
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal">
+          {/* Right slot: on mobile in focus mode, show Exit Focus button directly below Add button */}
+          <AnimatePresence>
+            {isFocusMode && onExitFocus && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, x: 5 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.9, x: 5 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="sm:hidden shrink-0"
+              >
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={onExitFocus}
+                  className="h-7.5 px-2.5 rounded-lg bg-[#3bda71] hover:bg-[#34c666] text-black font-semibold text-[11px] leading-[14px] flex items-center gap-1.5 border-0 cursor-pointer shadow-xs transition-all active:scale-95"
+                  title="Exit Focus Mode"
+                >
+                  <Minimize2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Exit Focus</span>
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="hidden sm:flex items-center gap-1.5 text-[12px] leading-[16px] text-neutral-400 dark:text-neutral-500 font-normal shrink-0">
             <span className="w-2 h-2 rounded-full bg-[#3bda71]" />
             <span>Optimistic Sync</span>
           </div>

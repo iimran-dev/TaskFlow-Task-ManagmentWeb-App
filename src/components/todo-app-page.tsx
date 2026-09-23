@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, ArrowLeft, Flame, Minimize2, Sparkles, Mail } from "lucide-react";
 import { GitHub, LinkedIn } from "@/components/icons";
 import { address } from "@/components/welcome-page";
@@ -311,14 +311,17 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
 
   // Filtered Todos by Priority and Search Query
   const filteredTodos = todos.filter((todo) => {
-    if (priorityFilter !== "all") {
-      const p = (todo.priority as string === "urgent" ? "high" : todo.priority) || "medium";
-      if (p !== priorityFilter) return false;
-    }
+    // In focus mode, categorization tabs and search bar are removed, so show all tasks without filtering
+    if (!isFocusMode) {
+      if (priorityFilter !== "all") {
+        const p = (todo.priority as string === "urgent" ? "high" : todo.priority) || "medium";
+        if (p !== priorityFilter) return false;
+      }
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      if (!todo.title.toLowerCase().includes(q)) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        if (!todo.title.toLowerCase().includes(q)) return false;
+      }
     }
 
     return true;
@@ -351,123 +354,147 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
         onClose={() => setIsShortcutsOpen(false)}
       />
 
-      {/* Floating Exit Focus Button (Visible when Focus Mode is active) */}
-      {isFocusMode && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: -10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: -10 }}
-          className="fixed top-4 right-4 sm:top-5 sm:right-6 z-50 flex items-center gap-2"
-        >
-          <Button
-            onClick={() => setIsFocusMode(false)}
-            className="h-9 px-3.5 rounded-full bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border border-[#3bda71] dark:border-[#3bda71] text-[13px] leading-[18px] font-semibold shadow-xl hover:bg-[#34c666] dark:hover:bg-[#34c666] hover:scale-105 active:scale-95 transition-all gap-2 cursor-pointer"
-            title="Exit Focus Mode (ESC)"
+      {/* Floating Exit Focus Button (Visible on Desktop when Focus Mode is active) */}
+      <AnimatePresence initial={false}>
+        {isFocusMode && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -10 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="hidden sm:flex fixed top-5 right-6 z-50 items-center gap-2"
           >
-            <Minimize2 className="w-3.5 h-3.5 text-black dark:text-black stroke-[2.5]" />
-            <span className="font-semibold text-black dark:text-black">Exit Focus</span>
-            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[11px] leading-[14px] font-mono font-medium rounded bg-black/15 text-black dark:bg-black/20 dark:text-black">ESC</kbd>
-          </Button>
-        </motion.div>
-      )}
-
-      {/* Top Navigation Bar (Hidden in Focus Mode) */}
-      {!isFocusMode && (
-        <header className="py-2.5 sm:py-4 px-3.5 sm:px-8 border-b border-neutral-200/80 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
-          <div className="max-w-2xl mx-auto flex items-center justify-between">
-            <motion.div
-              initial={{ opacity: 0, x: -15 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex items-center gap-2.5 sm:gap-3"
+            <Button
+              onClick={() => setIsFocusMode(false)}
+              className="h-9 px-3.5 rounded-full bg-[#3bda71] dark:bg-[#3bda71] text-black dark:text-black border border-[#3bda71] dark:border-[#3bda71] text-[13px] leading-[18px] font-semibold shadow-xl hover:bg-[#34c666] dark:hover:bg-[#34c666] hover:scale-105 active:scale-95 transition-all gap-2 cursor-pointer"
+              title="Exit Focus Mode (ESC)"
             >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm bg-[#3bda71] shrink-0">
-                <img src="/logo.png" alt="TaskFlow Logo" className="w-full h-full object-cover" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[16px] sm:text-[20px] leading-[22px] sm:leading-[24px] font-semibold tracking-[-0.02em] text-black dark:text-white">
-                    taskflow.
-                  </span>
+              <Minimize2 className="w-3.5 h-3.5 text-black dark:text-black stroke-[2.5]" />
+              <span className="font-semibold text-black dark:text-black">Exit Focus</span>
+              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[11px] leading-[14px] font-mono font-medium rounded bg-black/15 text-black dark:bg-black/20 dark:text-black">ESC</kbd>
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Top Navigation Bar (Smoothly slides out in Focus Mode) */}
+      <AnimatePresence initial={false}>
+        {!isFocusMode && (
+          <motion.header
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+            className="overflow-hidden border-b border-neutral-200/80 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40"
+          >
+            <div className="max-w-2xl mx-auto flex items-center justify-between py-2.5 sm:py-4 px-3.5 sm:px-8">
+              <motion.div
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4 }}
+                className="flex items-center gap-2.5 sm:gap-3"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm bg-[#3bda71] shrink-0">
+                  <img src="/mobile-logo.svg" alt="TaskFlow Logo" className="w-full h-full object-cover" />
                 </div>
-                <p className="text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] text-neutral-500 dark:text-neutral-400 font-normal">
-                  {format(new Date(), "EEEE, MMM d")}
-                </p>
-              </div>
-            </motion.div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[16px] sm:text-[20px] leading-[22px] sm:leading-[24px] font-semibold tracking-[-0.02em] text-black dark:text-white">
+                      taskflow.
+                    </span>
+                  </div>
+                  <p className="text-[11px] sm:text-[12px] leading-[14px] sm:leading-[16px] text-neutral-500 dark:text-neutral-400 font-normal">
+                    {format(new Date(), "EEEE, MMM d")}
+                  </p>
+                </div>
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 15 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex items-center gap-1.5 sm:gap-2"
-            >
-              {onBack && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onBack}
-                  className="h-10 px-3 sm:px-3.5 rounded-xl text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span className="hidden xs:inline">Home</span>
-                </Button>
-              )}
-              <UserProfileButton />
-              <div className="h-10 w-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm flex items-center justify-center p-0 shrink-0">
-                <ThemeToggle />
-              </div>
-            </motion.div>
-          </div>
-        </header>
-      )}
+              <motion.div
+                initial={{ opacity: 0, x: 15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4 }}
+                className="flex items-center gap-1.5 sm:gap-2"
+              >
+                {onBack && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onBack}
+                    className="h-10 px-3 sm:px-3.5 rounded-xl text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 transition-colors gap-1.5"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span className="hidden xs:inline">Home</span>
+                  </Button>
+                )}
+                <UserProfileButton />
+                <div className="h-10 w-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm flex items-center justify-center p-0 shrink-0">
+                  <ThemeToggle />
+                </div>
+              </motion.div>
+            </div>
+          </motion.header>
+        )}
+      </AnimatePresence>
 
       {/* Main App Workspace */}
-      <main className={`flex-1 px-3 sm:px-6 ${isFocusMode ? "py-3 sm:py-6" : "py-3 sm:py-6"}`}>
-        <div className={`mx-auto transition-all duration-300 ${isFocusMode ? "max-w-xl space-y-2.5 sm:space-y-3.5" : "max-w-2xl space-y-3 sm:space-y-4.5"}`}>
+      <main className="flex-1 px-3 sm:px-6 py-3 sm:py-6">
+        <motion.div
+          layout
+          transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+          className={`mx-auto ${isFocusMode ? "max-w-xl space-y-2.5 sm:space-y-3.5" : "max-w-2xl space-y-3 sm:space-y-4.5"}`}
+        >
 
           {/* Header Section (Condensed 1-line bar in Focus Mode vs Full Hero in Normal Mode) */}
-          {isFocusMode ? (
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center justify-between py-1 border-b border-neutral-200/80 dark:border-neutral-800/80 pb-2.5"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#3bda71] animate-pulse" />
-                <h2 className="text-[16px] sm:text-[18px] leading-[22px] sm:leading-[24px] font-semibold text-black dark:text-white tracking-[-0.02em]">
-                  Focus Workspace
-                </h2>
-              </div>
-              <span className="text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-neutral-500 dark:text-neutral-400">
-                {activeCount} active task{activeCount === 1 ? "" : "s"}
-              </span>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex items-center justify-between pt-0.5"
-            >
-              <div className="space-y-0.5 sm:space-y-1 text-left">
-                <h1 className="text-[22px] sm:text-[30px] leading-[28px] sm:leading-[38px] font-bold text-black dark:text-white tracking-[-0.02em] flex items-center gap-2">
-                  <span>{getGreeting()}</span>
-                  <span className="inline-block w-2 h-2 rounded-full bg-[#3bda71] align-baseline" />
-                </h1>
-                <p className="text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] text-neutral-500 dark:text-neutral-400 font-normal">
-                  Clean overview of your daily focus and targets.
-                </p>
-              </div>
+          <div className="overflow-hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              {isFocusMode ? (
+                <motion.div
+                  key="focus-header"
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="flex items-center justify-between py-1 border-b border-neutral-200/80 dark:border-neutral-800/80 pb-2.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#3bda71] animate-pulse" />
+                    <h2 className="text-[16px] sm:text-[18px] leading-[22px] sm:leading-[24px] font-semibold text-black dark:text-white tracking-[-0.02em]">
+                      Focus Workspace
+                    </h2>
+                  </div>
+                  <span className="text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-neutral-500 dark:text-neutral-400">
+                    {activeCount} active task{activeCount === 1 ? "" : "s"}
+                  </span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="normal-header"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="flex items-center justify-between pt-0.5"
+                >
+                  <div className="space-y-0.5 sm:space-y-1 text-left">
+                    <h1 className="text-[22px] sm:text-[30px] leading-[28px] sm:leading-[38px] font-bold text-black dark:text-white tracking-[-0.02em] flex items-center gap-2">
+                      <span>{getGreeting()}</span>
+                      <span className="inline-block w-2 h-2 rounded-full bg-[#3bda71] align-baseline" />
+                    </h1>
+                    <p className="text-[13px] sm:text-[14px] leading-[18px] sm:leading-[20px] text-neutral-500 dark:text-neutral-400 font-normal">
+                      Clean overview of your daily focus and targets.
+                    </p>
+                  </div>
 
-              {completedCount > 0 && (
-                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-black dark:text-[#3bda71] shrink-0">
-                  <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#3bda71] fill-[#3bda71]" />
-                  <span>{completedCount} Done</span>
-                </div>
+                  {completedCount > 0 && (
+                    <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#3bda71]/15 border border-[#3bda71]/30 text-[12px] sm:text-[13px] leading-[16px] sm:leading-[18px] font-medium text-black dark:text-[#3bda71] shrink-0">
+                      <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#3bda71] fill-[#3bda71]" />
+                      <span>{completedCount} Done</span>
+                    </div>
+                  )}
+                </motion.div>
               )}
-            </motion.div>
-          )}
+            </AnimatePresence>
+          </div>
 
           {/* Unauthenticated Cloud Workspace Banner */}
           {!user && !authLoading && (
@@ -511,27 +538,40 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
             addingTodo={addingTodo}
             titleInputRef={titleInputRef}
             isFocusMode={isFocusMode}
+            onExitFocus={() => setIsFocusMode(false)}
           />
 
-          {/* Live Search Bar */}
-          <TodoSearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            searchInputRef={searchInputRef}
-          />
+          {/* Live Search Bar & Categorization Filter Tabs (Smoothly collapse/expand during focus transitions) */}
+          <AnimatePresence initial={false}>
+            {!isFocusMode && (
+              <motion.div
+                key="search-and-filters"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+                className="overflow-hidden space-y-3 sm:space-y-4"
+              >
+                <TodoSearchBar
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  searchInputRef={searchInputRef}
+                />
 
-          {/* Color-Themed Priority Stats & Selector */}
-          <TodoStatsFilters
-            totalTodos={totalTodos}
-            highCount={highCount}
-            mediumCount={mediumCount}
-            lowCount={lowCount}
-            priorityFilter={priorityFilter}
-            setPriorityFilter={setPriorityFilter}
-            onOpenShortcuts={() => setIsShortcutsOpen(true)}
-            isFocusMode={isFocusMode}
-            onToggleFocusMode={() => setIsFocusMode((prev) => !prev)}
-          />
+                <TodoStatsFilters
+                  totalTodos={totalTodos}
+                  highCount={highCount}
+                  mediumCount={mediumCount}
+                  lowCount={lowCount}
+                  priorityFilter={priorityFilter}
+                  setPriorityFilter={setPriorityFilter}
+                  onOpenShortcuts={() => setIsShortcutsOpen(true)}
+                  isFocusMode={isFocusMode}
+                  onToggleFocusMode={() => setIsFocusMode((prev) => !prev)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Progress Bar */}
           <TodoProgress totalTodos={totalTodos} completedCount={completedCount} />
@@ -567,54 +607,62 @@ export function TodoAppPage({ onBack }: TodoAppPageProps) {
               </Button>
             </motion.div>
           )}
-        </div>
+        </motion.div>
       </main>
 
       {/* Footer */}
-      {!isFocusMode && (
-        <footer className="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black py-4 sm:py-5">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-            <p className="text-[12px] leading-[16px] font-normal text-neutral-400 dark:text-neutral-500">
-              <span className="hidden sm:inline">
-                TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
-              </span>
-              <span className="sm:hidden">
-                TaskFlow &bull; Tap task to toggle status
-              </span>
-            </p>
-            <div className="flex items-center gap-2">
-              <a
-                href={address.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub Profile"
-                title="GitHub"
-                className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
-              >
-                <GitHub className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href={address.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn Profile"
-                title="LinkedIn"
-                className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
-              >
-                <LinkedIn className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href={`mailto:${address.email}`}
-                aria-label="Send Email"
-                title="Email"
-                className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
-              >
-                <Mail className="w-3.5 h-3.5" />
-              </a>
+      <AnimatePresence initial={false}>
+        {!isFocusMode && (
+          <motion.footer
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+            className="overflow-hidden mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black"
+          >
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+              <p className="text-[12px] leading-[16px] font-normal text-neutral-400 dark:text-neutral-500">
+                <span className="hidden sm:inline">
+                  TaskFlow &bull; Press <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] font-mono font-medium">?</kbd> for Keyboard Shortcuts
+                </span>
+                <span className="sm:hidden">
+                  TaskFlow &bull; Tap task to toggle status
+                </span>
+              </p>
+              <div className="flex items-center gap-2">
+                <a
+                  href={address.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub Profile"
+                  title="GitHub"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <GitHub className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href={address.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn Profile"
+                  title="LinkedIn"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <LinkedIn className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href={`mailto:${address.email}`}
+                  aria-label="Send Email"
+                  title="Email"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-neutral-400 hover:text-[#3bda71] bg-neutral-100/80 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-[#3bda71]/50 hover:bg-[#3bda71]/10 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                </a>
+              </div>
             </div>
-          </div>
-        </footer>
-      )}
+          </motion.footer>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
